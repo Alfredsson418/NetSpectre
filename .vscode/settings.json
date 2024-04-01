@@ -1,0 +1,5 @@
+{
+    "files.associations": {
+        "network_device.h": "c"
+    }
+}

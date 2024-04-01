@@ -1,9 +1,3 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <pcap.h>
-#include <arpa/inet.h>
-#include <string.h>
-
 struct network_device
 {
     char name[100];

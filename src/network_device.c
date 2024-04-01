@@ -1,4 +1,6 @@
-#include "network_device.h"
+#include "../headers/netspectre.h"
+#include "../headers/network_device.h"
+
 
 struct network_device * get_first_network_dev(char errbuff[PCAP_ERRBUF_SIZE]) {
     pcap_if_t *all_devices = NULL;
@@ -49,59 +51,5 @@ struct network_device * get_first_network_dev(char errbuff[PCAP_ERRBUF_SIZE]) {
     pcap_freealldevs(all_devices);
 
     return network_device;
-
-
-    // for(d= devices; d != NULL; d= d->next) {
-        /*
-        bpf_u_int32 ip_raw; // IP address as integer
-        bpf_u_int32 subnet_mask_raw; // Subnet mask as integer
-        int lookup_return_code;
-        char ip[13];
-        char subnet_mask[13];
-        struct in_addr address; // Used for both ip & subnet
-        */
-
-        /*  Alternative way to get info about device
-        printf("%d. %s\n", ++i, d->name);
-
-
-        lookup_return_code = pcap_lookupnet(d->name, &ip_raw, &subnet_mask_raw, errbuff);
-        if (lookup_return_code == -1) {
-            printf("%s\n", errbuff);
-            return 1;
-        }
-
-        // Get ip in human readable form
-        address.s_addr = ip_raw;
-        strcpy(ip, inet_ntoa(address));
-        if (ip == NULL) {
-            perror("inet_ntoa"); // print error
-            return 1;
-        }
-
-        // Get subnet mask in human readable form
-        address.s_addr = subnet_mask_raw;
-        strcpy(subnet_mask, inet_ntoa(address));
-        if (subnet_mask == NULL) {
-            perror("inet_ntoa");
-            return 1;
-        }
-
-        printf("IP address: %s\n", ip);
-        printf("Subnet mask: %s\n", subnet_mask);
-        */
-    // }
-}
-
-/*
-int main() {
-    char err[PCAP_ERRBUF_SIZE];
-    struct network_device *device = get_first_network_dev(err);
-    if (device == NULL) {
-        printf("%s", err);
-    }
-    printf("%s",device->name);
-    free(device);
     
 }
-*/
