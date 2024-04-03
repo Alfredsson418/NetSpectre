@@ -20,7 +20,10 @@ struct network_device * get_first_network_dev(char errbuff[PCAP_ERRBUF_SIZE]) {
         strcpy(network_device->name, all_devices->name);
     }
 
-
+    /* 
+        Because all_devices is a pointer, I can just use the varible name to get the first
+        device.
+    */
     struct pcap_addr *a;
     for (a = all_devices->addresses; a != NULL; a = a->next) {
                           
