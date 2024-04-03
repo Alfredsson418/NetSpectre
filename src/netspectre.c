@@ -1,26 +1,27 @@
 #include "../headers/netspectre.h"
-#include "../headers/network_device.h"
+#include "../headers/scan.h"
 #include "../headers/packet_capture.h"
 
-int main() {
-    char errbuff[PCAP_ERRBUF_SIZE];
-    struct network_device * device = get_first_network_dev(errbuff);
-    pcap_t *handle;
-    int packet_count_limit = 1;
-    int timeout_limit = 10000;
-    const unsigned char *packet;
-    struct pcap_pkthdr packet_header;
+/*
+    This is the main file where all the "outgoing commands" are sent like scan and capture
+*/
 
-    handle = pcap_open_live(device->name, BUFSIZ, packet_count_limit, timeout_limit, errbuff);
 
-    if (handle == NULL) {
-        printf("Could not open device %s: %s\n", device ->name, errbuff);
-        return 2;
+int main(int argc, char *argv[]) {
+    // Always 1 or more becase name of file is first
+    if (argc < 2) {
+        printf("No arguments detected! Exiting! \n");
+        exit(0);
+    }
+
+    if (strcasecmp(argv[1], "capture") == 0) {
+        capture();
+    }else if (strcasecmp(argv[1], "scan") == 0) {
+        scan();
+
+    } else {
+        printf("Did not recognice command! Exiting! \n");
+        exit(0);
     }
     
-
-    pcap_loop(handle, 0, packet_handler, NULL);
-    pcap_close(handle);
-    free(device);
-
 }

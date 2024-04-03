@@ -1,5 +1,5 @@
-struct network_device
-{
+#include "netspectre.h"
+struct network_device {
     char name[100];
     char IPv4[INET_ADDRSTRLEN];
     char subnet_mask[INET_ADDRSTRLEN];

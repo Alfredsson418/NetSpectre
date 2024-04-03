@@ -29,4 +29,4 @@ memCheck:
 
 clean:
 	@rm -f $(OBJFILES) $(NAME)
-	@rmdir $(BUILD)
+	@rm -r $(BUILD)

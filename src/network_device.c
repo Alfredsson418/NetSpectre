@@ -1,6 +1,4 @@
-#include "../headers/netspectre.h"
 #include "../headers/network_device.h"
-
 
 struct network_device * get_first_network_dev(char errbuff[PCAP_ERRBUF_SIZE]) {
     pcap_if_t *all_devices = NULL;
