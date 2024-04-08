@@ -6,14 +6,60 @@ struct protocol_mapping {
     char* protocol_name;
 };
 
-void packet_handler(unsigned char *args,const struct pcap_pkthdr *header, const unsigned char *packet);
 
+/*
+    void packet_handler(unsigned char *args,const struct pcap_pkthdr *packet_header, const unsigned char *packet);
+        Usage:
+            args:    The args parameter is used to pass data that was specified when the packet handler
+                        function was registered with pcap_loop or pcap_dispatch.
+                        This could be any type of data that you want to have available
+                        in your packet handler function.
+            packet_header: Metadata about captured packet
+            packet: The frame or packet that was captured.
+        Return:
+            Void
+*/
+void packet_handler(unsigned char *args,const struct pcap_pkthdr *packet_header, const unsigned char *packet);
+
+
+/*
+    void print_packet_info(const unsigned char *packet, struct pcap_pkthdr packet_header);
+        Usage:
+            header: Metadata about captured packet
+            packet: The frame or packet that was captured.
+        Return:
+            Void
+*/
 void print_packet_info(const unsigned char *packet, struct pcap_pkthdr packet_header);
 
+
+/*
+    char * determine_packet_protocol(uint16_t packet_protocol, int layer);
+        Usage:
+            packet_protocol: Integer of 16 bits that represent a specific protocol
+            layer: An integer that represent what layer we are working on, 2 represent layer 2 (ethertype)
+        Return:
+            Returns the name of the protocol
+*/
 char * determine_packet_protocol(uint16_t packet_protocol, int layer);
 
+
+/*
+    void convert_mac_from_byte(uint8_t mac_bin[6], char mac[18]);
+        Usage:
+            mac_bin: Mac address in representet in binary
+            mac: The function writes the MAC address to this varible
+        Return:
+            Void
+*/
 void convert_mac_from_byte(uint8_t mac_bin[6], char mac[18]);
 
+
+/*
+    int capture();
+        Usage:
+            Used as the main function to capture packets
+*/
 int capture();
 
 static const struct protocol_mapping l2_protocol_map[] = {
