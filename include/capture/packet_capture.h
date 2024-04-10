@@ -1,7 +1,11 @@
+#ifndef PACKET_CAPTURE_H
+#define PACKET_CAPTURE_H
+
 #include "../netspectre.h"
 #include "../other/hexdump.h"
+#include "../other/process_arguments.h"
+#include "capture_arguments.h"
 #include "network_device.h"
-
 
 struct protocol_mapping {
     uint16_t ether_type;
@@ -62,7 +66,7 @@ void convert_mac_from_byte(uint8_t mac_bin[6], char mac[18]);
         Usage:
             Used as the main function to capture packets
 */
-int capture();
+int capture(int argc, char *argv[]);
 
 static const struct protocol_mapping l2_protocol_map[] = {
     {0x0800, "IPv4"}, // Internet
@@ -272,3 +276,5 @@ static const struct protocol_mapping l3_protocol_map[] = {
     {0x91, "NSH"}, // Network Service Header
     // This goes up to 255 but the rest are unassigned
 };
+
+#endif

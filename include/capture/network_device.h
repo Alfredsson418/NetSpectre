@@ -1,3 +1,6 @@
+#ifndef NETWORK_DEVICE_H
+#define NETWORK_DEVICE_H
+
 #include "../netspectre.h"
 
 struct network_device {
@@ -15,3 +18,5 @@ struct network_device {
             Returns first device from pcap_findalldevs, else NULL
 */
 struct network_device * get_first_network_dev(char errbuff[PCAP_ERRBUF_SIZE]);
+
+#endif

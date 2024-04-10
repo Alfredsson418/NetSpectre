@@ -26,9 +26,9 @@ void print_packet_info(const unsigned char *packet, struct pcap_pkthdr packet_he
         struct iphdr *ip = (struct iphdr *)(packet + sizeof(struct ether_header)); // Skip the Ethernet header;
         // printf("%s(%d) | ", determine_packet_protocol(ip->protocol, 3), ip->protocol);
 
-        struct in_addr src_addr, dst_addr;
-        src_addr.s_addr = ip->saddr;
-        dst_addr.s_addr = ip->daddr;
+        // struct in_addr src_addr, dst_addr;
+        // src_addr.s_addr = ip->saddr;
+        // dst_addr.s_addr = ip->daddr;
         // printf("SRC IP: %s ", inet_ntoa(src_addr));
         // printf("DST IP: %s", inet_ntoa(dst_addr));
 
@@ -103,7 +103,10 @@ void convert_mac_from_byte(uint8_t mac_bin[6], char mac[18]) {
 }
 
 // This could be handled as the main function for packet capturing
-int capture() {
+int capture(int argc, char *argv[]) {
+    process_arguments(argc, argv, capture_arguments_size, capture_arguments);
+    return 0;
+    /*
     char errbuff[PCAP_ERRBUF_SIZE];
     struct network_device * device = get_first_network_dev(errbuff);
     pcap_t *handle;
@@ -113,10 +116,6 @@ int capture() {
     struct pcap_pkthdr packet_header;
 
     printf("Capture on interface: %s\n", device->name);
-
-
-    struct bpf_program fp;
-    char filter_exp[] = "tcp"; // filter expression
 
     handle = pcap_open_live(device->name, 65535, packet_count_limit, timeout_limit, errbuff);
 
@@ -130,4 +129,5 @@ int capture() {
     // pcap_breakloop exists
     pcap_close(handle);
     free(device);
+    */
 }

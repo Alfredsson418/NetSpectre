@@ -1,3 +1,6 @@
+#ifndef HEXDUMP_H
+#define HEXDUMP_H
+
 #include "../netspectre.h"
 /*
     hexDump(addr, len, perLine);
@@ -12,3 +15,5 @@
     This function is also modified
 */
 void hexdump(const unsigned char * payload, const int len, int perLine);
+
+#endif

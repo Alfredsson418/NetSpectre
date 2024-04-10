@@ -14,7 +14,7 @@ int main(int argc, char *argv[]) {
     }
 
     if (strcasecmp(argv[1], "capture") == 0) {
-        capture();
+        capture(argc, argv);
     }else if (strcasecmp(argv[1], "scan") == 0) {
         // scan();
 
