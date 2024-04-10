@@ -5,24 +5,22 @@ NAME = netspec
 BUILD = build
 SRC = src
 
-FLAGS = -lpcap -Wall
-
-SRCFILES = $(wildcard $(SRC)/*.c)
+CFLAGS = -Wall
+LDFLAGS = -lpcap
+SRCFILES = $(wildcard $(SRC)/*.c) $(wildcard $(SRC)/**/*.c) 
 OBJFILES = $(patsubst $(SRC)/%.c, $(BUILD)/%.o, $(SRCFILES))
 
-.PHONY: build dirs clean memCheck
+.PHONY: build clean memCheck
 
-build: $(OBJFILES) 
+build: $(OBJFILES)
 	@echo "Building $(NAME)"
-	@$(CC) $^ -o $(NAME) $(FLAGS)
+	@$(CC) $(CFLAGS) $^ -o $(NAME) $(LDFLAGS)
 	@echo "Done!"
 
-$(BUILD)/%.o: $(SRC)/%.c | dirs
+$(BUILD)/%.o: $(SRC)/%.c
+	@mkdir -p $(@D)
 	@echo "Compiling $<"
-	@$(CC) -c -o $@ $<
-
-dirs: 
-	@mkdir -p $(BUILD)
+	@$(CC) $(CFLAGS) -c -o $@ $<
 
 memCheck:
 	-sudo valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --verbose --log-file=log.txt ./$(NAME)

@@ -1,4 +1,4 @@
-#include "../headers/network_device.h"
+#include "../../include/capture/network_device.h"
 
 struct network_device * get_first_network_dev(char errbuff[PCAP_ERRBUF_SIZE]) {
     pcap_if_t *all_devices = NULL;

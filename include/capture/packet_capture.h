@@ -1,5 +1,7 @@
-#include "netspectre.h"
+#include "../netspectre.h"
+#include "../other/hexdump.h"
 #include "network_device.h"
+
 
 struct protocol_mapping {
     uint16_t ether_type;

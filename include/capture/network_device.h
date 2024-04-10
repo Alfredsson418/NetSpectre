@@ -1,4 +1,4 @@
-#include "netspectre.h"
+#include "../netspectre.h"
 
 struct network_device {
     char name[100];

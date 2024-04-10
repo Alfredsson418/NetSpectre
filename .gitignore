@@ -1,6 +1,7 @@
 # Project specific
 # Files
 netspec
+log.txt
 
 # Folders
 build

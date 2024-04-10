@@ -1,6 +1,5 @@
-#include "../headers/netspectre.h"
-#include "../headers/scan.h"
-#include "../headers/packet_capture.h"
+#include "../include/netspectre.h"
+#include "../include/capture/packet_capture.h"
 
 /*
     This is the main file where all the "outgoing commands" are sent like scan and capture
@@ -17,7 +16,7 @@ int main(int argc, char *argv[]) {
     if (strcasecmp(argv[1], "capture") == 0) {
         capture();
     }else if (strcasecmp(argv[1], "scan") == 0) {
-        scan();
+        // scan();
 
     } else {
         printf("Did not recognice command! Exiting! \n");
