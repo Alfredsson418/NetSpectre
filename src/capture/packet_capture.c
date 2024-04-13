@@ -104,7 +104,7 @@ void convert_mac_from_byte(uint8_t mac_bin[6], char mac[18]) {
 
 // This could be handled as the main function for packet capturing
 int capture(int argc, char *argv[]) {
-    process_arguments(argc, argv, capture_arguments_size, capture_arguments);
+    process_arguments(argc, argv, capture_allowed_arguments_size, capture_allowed_arguments, capture_process_arguments);
     return 0;
     /*
     char errbuff[PCAP_ERRBUF_SIZE];
