@@ -6,6 +6,7 @@
 */
 
 
+
 void print_packet_info(const unsigned char *packet, struct pcap_pkthdr packet_header) {
     /*
         unsigned char ihl: The Internet Header Length (IHL) field. This represents the length of the IP header in 32-bit words. The minimum value is 5, which corresponds to a header length of 20 bytes.
@@ -54,38 +55,6 @@ void packet_handler(unsigned char *args,const struct pcap_pkthdr *packet_header,
 
 }
 
-// Determine 
-char * determine_packet_protocol(uint16_t packet_protocol, int layer) {
-    // https://en.wikipedia.org/wiki/EtherType
-    /*
-        EtherType is a mechanism used at Layer 2 to facilitate the
-        correct interpretation and processing of data at Layer 3.
-        The "map" can be found in the header file
-    */
-    switch (layer)
-    {
-    case 2: // Layer 2 (Ethertype)
-        for (int i = 0; i < sizeof(l2_protocol_map) / sizeof(l2_protocol_map[0]); i++) {
-            // ntohs is used to get a decimal
-            if (ntohs(packet_protocol) == l2_protocol_map[i].ether_type) {
-                return l2_protocol_map[i].protocol_name;
-            }
-        }
-        return "Unknown";
-
-    case 3: // Layer 3 (IP)
-        for (int i = 0; i < sizeof(l3_protocol_map) / sizeof(l3_protocol_map[0]); i++) {
-            if (packet_protocol == l3_protocol_map[i].ether_type) {
-                return l3_protocol_map[i].protocol_name;
-            }
-        }
-        return "Unknown";
-
-    default:
-        return "Unknown";
-    }
-}
-
 void convert_mac_from_byte(uint8_t mac_bin[6], char mac[18]) {
     /*
         "%02x" is the format specifier. The %x part means that the argument will be printed in hexadecimal.
@@ -104,7 +73,17 @@ void convert_mac_from_byte(uint8_t mac_bin[6], char mac[18]) {
 
 // This could be handled as the main function for packet capturing
 int capture(int argc, char *argv[]) {
-    process_arguments(argc, argv, capture_allowed_arguments_size, capture_allowed_arguments, capture_process_arguments);
+    struct capture_arguments argument;
+
+    // Default values
+    argument.verbose = 0;
+    argument.format = NULL;
+    argument.log_file = NULL;
+    argument.device = NULL;
+
+    argp_parse(&capture_argp, argc, argv, 0, 0, &argument);
+
+    printf("Verbose: %d \n Format: %s\n Log File: %s\n Device: %s", argument.verbose, argument.format, argument.log_file, argument.device);
     return 0;
     /*
     char errbuff[PCAP_ERRBUF_SIZE];

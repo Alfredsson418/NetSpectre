@@ -11,4 +11,7 @@
 #include <string.h>
 #include <stdbool.h>
 
+// https://www.gnu.org/software/libc/manual/html_node/Argp-Example-3.html
+#include <argp.h>
+
 #endif

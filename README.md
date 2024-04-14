@@ -8,6 +8,7 @@ NetSpectre is a networking tool that can (for now) capture traffic on the given 
 
 ## Libraries used
 * libpcap
+* argp
 
 ## Future ideas
 * Add a format option for packet capture so the user can choose what information shows and in what way.

@@ -1,22 +1,20 @@
 #ifndef CAPTURE_ARGUMENTS_H
 #define CAPTURE_ARGUMENTS_H
 
-#include "../other/process_arguments.h"
+#include "../../include/netspectre.h"
 
-static const struct argument_options capture_allowed_arguments[] = {
-    {"-v", "--verbose", false, false},
-    {"-f", "--format", true, false},
-    {"-l", "--log-file", true, false},
-    {"-d", "--device", true, false},
+extern const struct argp_option capture_options[];
+
+struct capture_arguments {
+    int verbose;
+    char * format;
+    char * log_file;
+    char * device;
 };
 
-#define CAPTURE_ALLOWED_ARGUMENTS_SIZE sizeof(capture_allowed_arguments) / sizeof(capture_allowed_arguments[0])
+/* Parse a single option. */
+error_t capture_parse_opt(int key, char *arg, struct argp_state *state);
 
-// static const struct argument_options (*capture_arguments_ptr)[] = &capture_arguments;
-
-
-static const int capture_allowed_arguments_size = CAPTURE_ALLOWED_ARGUMENTS_SIZE;
-
-static char * capture_process_arguments[CAPTURE_ALLOWED_ARGUMENTS_SIZE];
+extern struct argp capture_argp;
 
 #endif
