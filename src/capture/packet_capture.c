@@ -5,53 +5,9 @@
     You should be able to read and see what these packages contain
 */
 
-
-
-void print_packet_info(const unsigned char *packet, struct pcap_pkthdr packet_header) {
-    /*
-        unsigned char ihl: The Internet Header Length (IHL) field. This represents the length of the IP header in 32-bit words. The minimum value is 5, which corresponds to a header length of 20 bytes.
-        unsigned char version: The version of the IP protocol. For IPv4, this is always 4.
-        unsigned char tos: The Type of Service (ToS) field. This field is used to specify the quality of service desired for the packet.
-        unsigned short tot_len: The total length of the IP packet, including the header and the data, in bytes.
-        unsigned short id: An identifier to aid in assembling the fragments of a datagram.
-        unsigned short frag_off: The fragment offset field, measured in units of 8-byte blocks.
-        unsigned char ttl: The Time To Live (TTL) field. This field is used to limit the lifespan of a packet in the network.
-        unsigned char protocol: The protocol field. This field indicates the protocol used in the payload of the IP packet.
-        unsigned short check: The checksum field. This field is used for error-checking of the header.
-        unsigned int saddr: The source IP address.
-        unsigned int daddr: The destination IP address.
-    */
-
-    struct ether_header *eth = (struct ether_header *)packet;;
-    if (strcmp(determine_packet_protocol(eth->ether_type, 2), "IPv4") == 0) {
-        struct iphdr *ip = (struct iphdr *)(packet + sizeof(struct ether_header)); // Skip the Ethernet header;
-        // printf("%s(%d) | ", determine_packet_protocol(ip->protocol, 3), ip->protocol);
-
-        // struct in_addr src_addr, dst_addr;
-        // src_addr.s_addr = ip->saddr;
-        // dst_addr.s_addr = ip->daddr;
-        // printf("SRC IP: %s ", inet_ntoa(src_addr));
-        // printf("DST IP: %s", inet_ntoa(dst_addr));
-
-        /*
-            The size of the Ethernet header is typically 14 bytes (sizeof(struct ether_header)),
-            and the size of the IP header can be calculated from the ihl field of the iphdr struct,
-            which represents the header length in 32-bit words. To convert this to bytes, you multiply by 4.
-        */
-        unsigned char *payload = (unsigned char *)(packet + sizeof(struct ether_header) + ip->ihl*4);
-        int payload_length = packet_header.len - sizeof(struct ether_header) - ip->ihl*4;
-        hexdump(payload, payload_length, 16);
-        
-    }
-    // printf("Packet capture length: %d ", packet_header.caplen);
-    // printf("Packet total length %d", packet_header.len);
-    // printf("Timestamp: %ld.%06ld", packet_header.ts.tv_sec, packet_header.ts.tv_usec);
-    printf("\n");
-}
-
 // Callback function for pcap_loop
-void packet_handler(unsigned char *args,const struct pcap_pkthdr *packet_header, const unsigned char *packet) {
-    print_packet_info(packet, *packet_header);
+void packet_handler(struct capture_arguments * arguments ,const struct pcap_pkthdr *packet_header, const unsigned char *packet) {
+    print_packet_info(packet, *packet_header, arguments);
 
 }
 
@@ -73,19 +29,20 @@ void convert_mac_from_byte(uint8_t mac_bin[6], char mac[18]) {
 
 // This could be handled as the main function for packet capturing
 int capture(int argc, char *argv[]) {
-    struct capture_arguments argument;
+    struct capture_arguments arguments;
 
     // Default values
-    argument.verbose = 0;
-    argument.format = NULL;
-    argument.log_file = NULL;
-    argument.device = NULL;
+    arguments.verbose = 0;
+    arguments.format = NULL;
+    arguments.log_file = NULL;
+    arguments.device = NULL;
 
-    argp_parse(&capture_argp, argc, argv, 0, 0, &argument);
+    argp_parse(&capture_argp, argc, argv, 0, 0, &arguments);
 
-    printf("Verbose: %d \n Format: %s\n Log File: %s\n Device: %s", argument.verbose, argument.format, argument.log_file, argument.device);
-    return 0;
-    /*
+    // printf("Verbose: %d \n Format: %s\n Log File: %s\n Device: %s", argument.verbose, argument.format, argument.log_file, argument.device);
+
+
+    
     char errbuff[PCAP_ERRBUF_SIZE];
     struct network_device * device = get_first_network_dev(errbuff);
     pcap_t *handle;
@@ -104,9 +61,11 @@ int capture(int argc, char *argv[]) {
     }
     
 
-    pcap_loop(handle, 0, packet_handler, NULL);
+    pcap_loop(handle, 0, (pcap_handler)packet_handler, (unsigned char*)&arguments);
     // pcap_breakloop exists
     pcap_close(handle);
     free(device);
-    */
+
+    return 0;
+    
 }

@@ -16,7 +16,10 @@ int main(int argc, char *argv[]) {
     // Create a new array to store the merged strings
     char *processed_argv[argc - 1];
 
-    // Merge the first and second arguments into the format "%s %s"
+    /*
+        Merge the first and second arguments into the format "%s %s"
+        The merge is nessesary because to show the help and usage command correctly for argp
+    */
     char *merged_string = malloc(strlen(argv[0]) + strlen(argv[1]) + 2);
     sprintf(merged_string, "%s %s", argv[0], argv[1]);
 

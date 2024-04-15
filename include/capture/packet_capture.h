@@ -2,10 +2,9 @@
 #define PACKET_CAPTURE_H
 
 #include "../netspectre.h"
-#include "../other/hexdump.h"
 #include "capture_arguments.h"
 #include "network_device.h"
-#include "protocol_maps.h"
+#include "capture_output.h"
 
 
 /*
@@ -17,21 +16,11 @@
                         in your packet handler function.
             packet_header: Metadata about captured packet
             packet: The frame or packet that was captured.
+            arguments: The program arguments
         Return:
             Void
 */
-void packet_handler(unsigned char *args,const struct pcap_pkthdr *packet_header, const unsigned char *packet);
-
-
-/*
-    void print_packet_info(const unsigned char *packet, struct pcap_pkthdr packet_header);
-        Usage:
-            header: Metadata about captured packet
-            packet: The frame or packet that was captured.
-        Return:
-            Void
-*/
-void print_packet_info(const unsigned char *packet, struct pcap_pkthdr packet_header);
+void packet_handler(struct capture_arguments * arguments, const struct pcap_pkthdr *packet_header, const unsigned char *packet);
 
 
 /*
