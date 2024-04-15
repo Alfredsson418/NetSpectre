@@ -1,5 +1,10 @@
 #include "../../include/capture/protocol_maps.h"
 
+struct protocol_mapping {
+    uint16_t ether_type;
+    char* protocol_name;
+};
+
 const struct protocol_mapping l2_protocol_map[] = {
     {0x0800, "IPv4"}, // Internet
     {0x0806, "ARP"}, // Address Resolution Protocol

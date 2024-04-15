@@ -5,7 +5,7 @@ NAME = netspec
 BUILD = build
 SRC = src
 
-CFLAGS = -Wall
+CFLAGS = -Wall -g
 LDFLAGS = -lpcap
 
 # Get all the source files in the SRC directory and its subdirectories

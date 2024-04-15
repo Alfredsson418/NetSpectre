@@ -3,7 +3,6 @@
 // Program documentation.
 const char capture_docs[] = "Capture packets from and to your device.";
 
-const char capture_args_doc[] = "netspec capture [flags]";
 
 
 /*
@@ -31,7 +30,7 @@ const struct argp_option capture_options[] = {
     { 0 }
 };
 
-struct argp capture_argp = { capture_options, capture_parse_opt, capture_args_doc, capture_docs };
+struct argp capture_argp = { capture_options, capture_parse_opt, 0, capture_docs };
 
 
 error_t capture_parse_opt(int key, char *arg, struct argp_state *state){

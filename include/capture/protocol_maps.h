@@ -3,15 +3,6 @@
 
 #include "../netspectre.h"
 
-struct protocol_mapping {
-    uint16_t ether_type;
-    char* protocol_name;
-};
-
-extern const struct protocol_mapping l2_protocol_map[];
-
-extern const struct protocol_mapping l3_protocol_map[];
-
 /*
     char * determine_packet_protocol(uint16_t packet_protocol, int layer);
         Usage:

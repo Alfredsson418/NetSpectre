@@ -12,28 +12,40 @@ int main(int argc, char *argv[]) {
         printf("No arguments detected! Exiting! \n");
         exit(0);
     }
+    
+    // Create a new array to store the merged strings
+    char *processed_argv[argc - 1];
 
-    // Skipping the second index so that I can pass it to argp without unknown behavior
-    char *options_argv[argc - 1];
-    options_argv[0] = argv[0];
-    for (int i = 1; i < argc - 1; i++) {
-        options_argv[i] = argv[i + 1];
+    // Merge the first and second arguments into the format "%s %s"
+    char *merged_string = malloc(strlen(argv[0]) + strlen(argv[1]) + 2);
+    sprintf(merged_string, "%s %s", argv[0], argv[1]);
+
+    // Store the merged string in the new array
+    processed_argv[0] = merged_string;
+
+    // Copy the remaining arguments to the new array
+    for (int i = 2; i < argc; i++) {
+        processed_argv[i - 1] = argv[i];
     }
-    int options_argc = argc - 1;
 
+    // Print the merged array
     /*
-    for (int i = 0; i < options_argc; i++) {
-        printf("%s\n", options_argv[i]);
+    for (int i = 0; i < argc - 1; i++) {
+        printf("%s\n", processed_argv[i]);
     }
     */
 
     if (strcasecmp(argv[1], "capture") == 0) {
-        capture(options_argc, options_argv);
+        capture(argc -1, processed_argv);
     }else if (strcasecmp(argv[1], "scan") == 0) {
         // scan();
     } else {
         printf("Did not recognice command! Exiting! \n");
         exit(0);
     }
+
+    free(merged_string);
+
+    return 0;
     
 }

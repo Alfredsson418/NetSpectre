@@ -11,8 +11,11 @@ struct capture_arguments {
     char * log_file;
     char * device;
 };
-
-/* Parse a single option. */
+/*
+    error_t capture_parse_opt(int key, char *arg, struct argp_state *state);
+    
+    Used as an callback function in argp_parse
+*/
 error_t capture_parse_opt(int key, char *arg, struct argp_state *state);
 
 extern struct argp capture_argp;
