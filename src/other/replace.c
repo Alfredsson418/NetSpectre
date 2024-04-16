@@ -1,4 +1,4 @@
-#include "../../include/other/replace_substring.h"
+#include "../../include/other/replace.h"
 
 // Function to replace all occurrences of a substring in a string
 char * replace_substring(char *str, const char *old_sub, const char *new_sub) {

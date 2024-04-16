@@ -10,6 +10,7 @@ struct capture_arguments {
     char * format;
     char * log_file;
     char * device;
+    int hexdump;
 };
 /*
     error_t capture_parse_opt(int key, char *arg, struct argp_state *state);

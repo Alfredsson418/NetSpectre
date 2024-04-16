@@ -11,7 +11,7 @@ void packet_handler(struct capture_arguments * arguments ,const struct pcap_pkth
 
 }
 
-void convert_mac_from_byte(uint8_t mac_bin[6], char mac[18]) {
+void bin_to_mac(uint8_t mac_bin[6], char mac[18]) {
     /*
         "%02x" is the format specifier. The %x part means that the argument will be printed in hexadecimal.
         The 02 part means that the printed hexadecimal number will always have at least two digits.
@@ -25,6 +25,7 @@ void convert_mac_from_byte(uint8_t mac_bin[6], char mac[18]) {
             mac[i*3 + 2] = ':';
         }
     }
+
 }
 
 // This could be handled as the main function for packet capturing
@@ -36,6 +37,7 @@ int capture(int argc, char *argv[]) {
     arguments.format = NULL;
     arguments.log_file = NULL;
     arguments.device = NULL;
+    arguments.hexdump = 0;
 
     argp_parse(&capture_argp, argc, argv, 0, 0, &arguments);
 

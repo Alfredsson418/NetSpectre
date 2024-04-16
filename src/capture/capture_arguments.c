@@ -27,6 +27,7 @@ const struct argp_option capture_options[] = {
     {"format", 'f', "FORMAT", 0, "Specifies output FORMAT for packet capturing"},
     {"log-file", 'l', "FILE", 0, "Specifies output log FILE"},
     {"device", 'd', "DEVICE", 0, "Specifies the DEVICE to capture from"},
+    {"hexdump", 'x', 0, 0, "Output hexdump from package"},
     { 0 }
 };
 
@@ -52,6 +53,9 @@ error_t capture_parse_opt(int key, char *arg, struct argp_state *state){
         break;
     case 'd':
         arguments->device = arg;
+        break;
+    case 'x':
+        arguments->hexdump = 1;
         break;
     default:
         return ARGP_ERR_UNKNOWN;

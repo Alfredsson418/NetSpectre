@@ -5,7 +5,9 @@
 #include "../other/hexdump.h"
 #include "protocol_maps.h"
 #include "capture_arguments.h"
-#include "../other/replace_substring.h"
+#include "packet_capture.h"
+#include "../other/replace.h"
+
 
 /*
     void print_packet_info(const unsigned char *packet, struct pcap_pkthdr packet_header);

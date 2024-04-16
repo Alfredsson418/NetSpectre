@@ -1,5 +1,5 @@
-#ifndef REPLACE_SUBSTRING_H
-#define REPLACE_SUBSTRING_H
+#ifndef REPLACE_H
+#define REPLACE_H
 
 #include "../netspectre.h"
 

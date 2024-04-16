@@ -16,38 +16,72 @@ void print_packet_info(const unsigned char *packet, struct pcap_pkthdr packet_he
         unsigned int daddr: The destination IP address.
     */
 
-    char * output_format = replace_substring(arguments->format, "{format1}", "new_format");
+    if (strstr(arguments->format, "\\n")) {
+        arguments->format = replace_substring(arguments->format, "\\n", "\n");
+    }
+    if (strstr(arguments->format, "\\t")) {
+        arguments->format = replace_substring(arguments->format, "\\t", "\t");
+    }
+    if (strstr(arguments->format, "\\v")) {
+        arguments->format = replace_substring(arguments->format, "\\v", "\v");
+    }
 
-    printf("%s\n", output_format);
+    struct ether_header *eth = (struct ether_header *)packet;
 
-    
+    if (strstr(arguments->format, "{mac-src}") != NULL) {
+        char mac[18] = {0};
+        bin_to_mac(eth->ether_shost, mac);
+        arguments->format = replace_substring(arguments->format, "{mac-src}", mac);
+    }
+    if (strstr(arguments->format, "{mac-dst}") != NULL) {
+        char mac[18] = {0};
+        bin_to_mac(eth->ether_dhost, mac);
+        arguments->format = replace_substring(arguments->format, "{mac-dst}", mac);
+    }
 
+    char * eth_type = determine_packet_protocol(eth->ether_type, 2);
 
-    /*
-    struct ether_header *eth = (struct ether_header *)packet;;
-    if (strcmp(determine_packet_protocol(eth->ether_type, 2), "IPv4") == 0) {
+    if (strstr(arguments->format, "{mac-prot}") != NULL) {
+        arguments->format = replace_substring(arguments->format, "{mac-prot}", eth_type);
+    }
+
+    if (strcmp(eth_type, "IPv4") == 0) {
         struct iphdr *ip = (struct iphdr *)(packet + sizeof(struct ether_header)); // Skip the Ethernet header;
         // printf("%s(%d) | ", determine_packet_protocol(ip->protocol, 3), ip->protocol);
-
-        // struct in_addr src_addr, dst_addr;
-        // src_addr.s_addr = ip->saddr;
-        // dst_addr.s_addr = ip->daddr;
-        // printf("SRC IP: %s ", inet_ntoa(src_addr));
-        // printf("DST IP: %s", inet_ntoa(dst_addr));
-
         
+        if (strstr(arguments->format, "{ipv4-src}") != NULL) {
+            struct in_addr src_addr;
+            src_addr.s_addr = ip->saddr;
+            arguments->format = replace_substring(arguments->format, "{ipv4-src}", inet_ntoa(src_addr));
+        }
+        if (strstr(arguments->format, "{ipv4-dst}") != NULL) {
+            struct in_addr dst_addr;
+            dst_addr.s_addr = ip->daddr;
+            arguments->format = replace_substring(arguments->format, "{ipv4-dst}", inet_ntoa(dst_addr));
+        }
+        char * ip_protocol = determine_packet_protocol(ip->protocol, 3);
+        if (strstr(arguments->format, "{ipv4-prot}") != NULL) {
+            arguments->format = replace_substring(arguments->format, "{ipv4-prot}", ip_protocol);
+        }
+        if (strstr(arguments->format, "{ipv4-prot-num}") != NULL) {
+            char str[4];
+            sprintf(str, "%d", ip->protocol);
+            arguments->format = replace_substring(arguments->format, "{ipv4-prot-num}", str);
+        }
+
+        /*
             The size of the Ethernet header is typically 14 bytes (sizeof(struct ether_header)),
             and the size of the IP header can be calculated from the ihl field of the iphdr struct,
             which represents the header length in 32-bit words. To convert this to bytes, you multiply by 4.
-        
-        unsigned char *payload = (unsigned char *)(packet + sizeof(struct ether_header) + ip->ihl*4);
-        int payload_length = packet_header.len - sizeof(struct ether_header) - ip->ihl*4;
-        hexdump(payload, payload_length, 16);
-        
+        */
+        if (arguments->hexdump) {
+            unsigned char *payload = (unsigned char *)(packet + sizeof(struct ether_header) + ip->ihl*4);
+            int payload_length = packet_header.len - sizeof(struct ether_header) - ip->ihl*4;
+            hexdump(payload, payload_length, 16);
+        }
     }
     // printf("Packet capture length: %d ", packet_header.caplen);
     // printf("Packet total length %d", packet_header.len);
     // printf("Timestamp: %ld.%06ld", packet_header.ts.tv_sec, packet_header.ts.tv_usec);
-    printf("\n");
-    */
+    printf("%s\n", arguments->format);
 }

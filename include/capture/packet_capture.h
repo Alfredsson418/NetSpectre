@@ -31,7 +31,7 @@ void packet_handler(struct capture_arguments * arguments, const struct pcap_pkth
         Return:
             Void
 */
-void convert_mac_from_byte(uint8_t mac_bin[6], char mac[18]);
+void bin_to_mac(uint8_t mac_bin[6], char mac[18]);
 
 
 /*
