@@ -1,6 +1,15 @@
 # NetSpectre
 NetSpectre is a networking tool that can (for now) capture traffic on the given device.
 
+## Capture
+`netspec capture [options]`
+* `-v` Produce verbose output
+* `-f FORMAT` Specifies output FORMAT for packet capturing
+* `-l FILE` Specifies output log FILE
+* `-d DEVICE` Specifies the DEVICE to capture from
+* `-x` Output hexdump from package  
+More information about each option in `CAPTURE.md`
+
 ## How to compile
 1. Download necessary libraries
 2. Run `make` in the project root folder
