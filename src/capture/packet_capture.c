@@ -10,13 +10,13 @@ void packet_handler(struct capture_arguments * arguments ,const struct pcap_pkth
     // String does not change
     char * string = arguments->format;
     if (strstr(string, "\\n")) {
-        replace_substring(string, "\\n", "\n");
+        string = replace_substring(string, "\\n", "\n");
     }
     if (strstr(string, "\\t")) {
-        replace_substring(string, "\\t", "\t");
+        string = replace_substring(string, "\\t", "\t");
     }
     if (strstr(string, "\\v")) {
-        replace_substring(string, "\\v", "\v");
+        string = replace_substring(string, "\\v", "\v");
     }
 
     packet_header_info(packet_header, &string);
