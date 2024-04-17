@@ -43,3 +43,12 @@ char * replace_substring(char *str, const char *old_sub, const char *new_sub) {
     result[i] = '\0'; // Add null terminator to the modified string
     return result; // Return the modified string
 }
+
+void replace_format(char **format, char *substring, char *replacement) {
+    if (strstr(*format, substring) != NULL) {
+        *format = replace_substring(*format, substring, replacement);
+    } else {
+        *format = replace_substring(*format, substring, "NULL");
+    }
+    
+}

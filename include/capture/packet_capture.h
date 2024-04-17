@@ -1,10 +1,15 @@
 #ifndef PACKET_CAPTURE_H
 #define PACKET_CAPTURE_H
 
+
+
 #include "../netspectre.h"
 #include "capture_arguments.h"
 #include "network_device.h"
-#include "capture_output.h"
+#include "capture_format.h"
+#include "../other/replace.h"
+#include "../other/hexdump.h"
+
 
 
 /*
@@ -20,7 +25,7 @@
         Return:
             Void
 */
-void packet_handler(struct capture_arguments * arguments, const struct pcap_pkthdr *packet_header, const unsigned char *packet);
+void packet_handler(struct capture_arguments * arguments , const struct pcap_pkthdr *packet_header, const unsigned char *packet);
 
 
 /*

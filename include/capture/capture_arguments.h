@@ -7,10 +7,11 @@ extern const struct argp_option capture_options[];
 
 struct capture_arguments {
     int verbose;
-    char * format;
+    const char * format;
     char * log_file;
     char * device;
     int hexdump;
+    int quiet;
 };
 /*
     error_t capture_parse_opt(int key, char *arg, struct argp_state *state);
