@@ -42,7 +42,7 @@ void packet_handler(struct capture_arguments * arguments ,const struct pcap_pkth
         int payload_length = packet_header->len - sizeof(struct ether_header) - ip->ihl*4;
         hexdump(payload, payload_length, 16);
     }
-    printf("%s\n", string);
+    PRINT("%s\n", string);
 }   
 
 void bin_to_mac(uint8_t mac_bin[6], char mac[18]) {
@@ -64,10 +64,30 @@ void bin_to_mac(uint8_t mac_bin[6], char mac[18]) {
 
 // This could be handled as the main function for packet capturing
 int capture(int argc, char *argv[]) {
+    char errbuff[PCAP_ERRBUF_SIZE]; // Error Buffer
+
+    // Varibles for pcap_open_live
+    struct network_device * device; // Network device to fetch packages from
+    int snap_len = 65663; // The maximum number of bytes to capture from each packet.
+    /*
+        If promisc is set to 1, the interface will be put into promiscuous mode.
+        This means that all packets on the network, not just those destined
+        for your machine, will be captured. 
+        If set to 0, only packets destined for your machine will be captured.
+    */ 
+    int promisc = 1;  
+    int to_ms = -1; // The read timeout in milliseconds. A value of -1 means to wait indefinitely for a packet.
+    pcap_t *package_handle; // Packet capture handle
+
+    // Varibles for pcap_loop
+    int packages_count = 0; // The number of packets to process before returning. A value of -1 or 0 means to loop forever.
+
+    // Varibles for argp
     struct capture_arguments *arguments = malloc(sizeof(struct capture_arguments));
+
     if (arguments == NULL) {
-        printf("Failed to allocate memory for arguments\n");
-        return -1;
+        ERR_PRINT("Failed to allocate memory for arguments\n", NULL);
+        exit(0);
     }
 
     // Default values
@@ -85,51 +105,28 @@ int capture(int argc, char *argv[]) {
 
     argp_parse(&capture_argp, argc, argv, 0, 0, arguments);
 
-    // printf("Verbose: %d \n Format: %s\n Log File: %s\n Device: %s", argument.verbose, argument.format, argument.log_file, argument.device);
-
-
+    if (arguments->device == NULL) {
+        device = get_first_network_dev(errbuff);
+        if (device == NULL) {
+            ERR_PRINT("Error opening network device: %s\n", errbuff);
+            exit(0);
+        } else {
+            arguments->device = device->name;
+        }
+    }
     
-    char errbuff[PCAP_ERRBUF_SIZE];
-    struct network_device * device = get_first_network_dev(errbuff);
-    pcap_t *decsr;
-    int packet_count_limit = 1;
-    int timeout_limit = -1;
-    struct bpf_program fp;        /* to hold compiled program */
-    bpf_u_int32 pNet;             /* ip address*/
-    bpf_u_int32 pMask;            /* subnet mask */
+    PRINT("Capture on interface: %s\n", arguments->device);
 
-    printf("Capture on interface: %s\n", device->name);
-
-    // fetch the network address and network mask
-    pcap_lookupnet("wlp61s0", &pNet, &pMask, errbuff);
-
-    decsr = pcap_open_live("wlp61s0", BUFSIZ, 0, -1, errbuff);
-
-    if (decsr == NULL) {
-        printf("Could not open device %s: %s\n", device->name, errbuff);
-        return 2;
-    }
-    /*
-    // Compile the filter expression
-    if(pcap_compile(decsr, &fp, "tcp", 0, &pMask) == -1)
-    {
-        printf("\npcap_compile() failed\n");
-        return -1;
+    package_handle = pcap_open_live(arguments->device, snap_len, promisc, to_ms, errbuff);
+    if (package_handle == NULL) {
+        ERR_PRINT("Could not open device %s: %s\n", device->name, errbuff);
+        exit(0);
     }
 
-        // Set the filter compiled above
-    if(pcap_setfilter(decsr, &fp) == -1)
-    {
-        printf("\npcap_setfilter() failed\n");
-        exit(1);
-    }
-    */
-
-    pcap_loop(decsr, 0, packet_handler, (char *) arguments);
+    pcap_loop(package_handle, packages_count,(pcap_handler) packet_handler, (unsigned char *) arguments);
     // pcap_breakloop exists
-    pcap_close(decsr);
+    pcap_close(package_handle);
     free(device);
-
     return 0;
     
 }

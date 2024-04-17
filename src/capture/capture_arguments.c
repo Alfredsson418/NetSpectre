@@ -22,6 +22,13 @@ const char capture_docs[] = "Capture packets from and to your device.";
                  OPTION_HIDDEN       – Don’t show this option in –help output
      DOC    – A documentation string for this option, shown in –help output
 */
+/*
+    to add
+    packages_count
+    read timeout (in milliseconds)
+    snap_len
+    promisc
+*/
 const struct argp_option capture_options[] = {
     {"verbose", 'v', 0, 0, "Produce verbose output"},
     {"format", 'f', "FORMAT", 0, "Specifies output FORMAT for packet capturing"},
@@ -44,7 +51,7 @@ error_t capture_parse_opt(int key, char *arg, struct argp_state *state){
     
     switch (key) {
     case 'v':
-        arguments->verbose = 1;
+        g_verboseEnabled = 1;
         break;
     case 'f':
         arguments->format = arg;

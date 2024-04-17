@@ -3,6 +3,27 @@
 
 #include "../netspectre.h"
 
-void output(char * string, int output_to_terminal, int output_to_logile, char * log_file_location);
+extern int g_verboseEnabled;
+extern int g_debugEnabled;
+
+#define VERBOSE_MESSAGE(fmt, ...)\
+do{\
+    if(g_verboseEnabled) fprintf(stdout, fmt, __VA_ARGS__);\
+}while(0)
+
+#define DEBUG_MESSAGE(fmt, ...)\
+do{\
+    if(g_debugEnabled) fprintf(stdout, fmt, __VA_ARGS__);\
+}while(0)
+
+#define PRINT(fmt, ...)\
+do{\
+    fprintf(stdout, fmt, __VA_ARGS__);\
+}while(0)
+
+#define ERR_PRINT(fmt, ...)\
+do{\
+    fprintf(stderr, fmt, __VA_ARGS__);\
+}while(0)
 
 #endif
