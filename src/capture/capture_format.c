@@ -52,18 +52,26 @@ void l3_packet_info(struct iphdr *ip, char **format) {
         unsigned int saddr: The source IP address.
         unsigned int daddr: The destination IP address.
     */
-    struct in_addr src_addr, dst_addr;
+    char src_ip[INET_ADDRSTRLEN];
+    char dst_ip[INET_ADDRSTRLEN];
     char str[4] = {0};
     char *ip_protocol = NULL;
+    struct in_addr src_addr, dst_addr;
+
     if (ip != NULL) {
-        src_addr.s_addr = ip->saddr;
         dst_addr.s_addr = ip->daddr;
+        strncpy(dst_ip, inet_ntoa(dst_addr), INET_ADDRSTRLEN);
+
+        // inet_ntoa will overwrite if not copied to other value
+        src_addr.s_addr = ip->saddr;
+        strncpy(src_ip, inet_ntoa(src_addr), INET_ADDRSTRLEN);
+        
         ip_protocol = determine_packet_protocol(ip->protocol, 3);
         sprintf(str, "%d", ip->protocol);
     } 
     
-    replace_format(format, "{ipv4-src}", inet_ntoa(src_addr));
-    replace_format(format, "{ipv4-dst}", inet_ntoa(dst_addr));
+    replace_format(format, "{ipv4-src}", src_ip);
+    replace_format(format, "{ipv4-dst}", dst_ip);
     replace_format(format, "{ipv4-prot}", ip_protocol);
     replace_format(format, "{ipv4-prot-num}", str);
 }

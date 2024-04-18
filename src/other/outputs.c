@@ -2,4 +2,4 @@
 
 int g_verboseEnabled = 0;
 
-int g_debugEnabled = 0;
+int g_debugEnabled = 1;

@@ -13,7 +13,10 @@ do{\
 
 #define DEBUG_MESSAGE(fmt, ...)\
 do{\
-    if(g_debugEnabled) fprintf(stdout, fmt, __VA_ARGS__);\
+    if(g_debugEnabled) {\
+        fprintf(stdout, "DEBUG: ");\
+        fprintf(stdout, fmt, __VA_ARGS__);\
+    } \
 }while(0)
 
 #define PRINT(fmt, ...)\
@@ -23,6 +26,7 @@ do{\
 
 #define ERR_PRINT(fmt, ...)\
 do{\
+    fprintf(stderr, "ERR: ");\
     fprintf(stderr, fmt, __VA_ARGS__);\
 }while(0)
 

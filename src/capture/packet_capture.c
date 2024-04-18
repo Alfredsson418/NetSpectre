@@ -7,6 +7,15 @@
 
 // Callback function for pcap_loop
 void packet_handler(struct capture_arguments * arguments ,const struct pcap_pkthdr *packet_header, const unsigned char *packet) {
+
+    /*
+        sniff_ethernet 	X
+        sniff_ip 	X + SIZE_ETHERNET
+        sniff_tcp 	X + SIZE_ETHERNET + {IP header length}
+        payload 	X + SIZE_ETHERNET + {IP header length} + {TCP header length}
+    
+    */
+    
     // String does not change
     char * string = arguments->format;
     if (strstr(string, "\\n")) {
@@ -62,6 +71,7 @@ void bin_to_mac(uint8_t mac_bin[6], char mac[18]) {
 
 }
 
+
 // This could be handled as the main function for packet capturing
 int capture(int argc, char *argv[]) {
     char errbuff[PCAP_ERRBUF_SIZE]; // Error Buffer
@@ -77,7 +87,7 @@ int capture(int argc, char *argv[]) {
     */ 
     int promisc = 1;  
     int to_ms = -1; // The read timeout in milliseconds. A value of -1 means to wait indefinitely for a packet.
-    pcap_t *package_handle; // Packet capture handle
+    pcap_t *package_handle = NULL; // Packet capture handle
 
     // Varibles for pcap_loop
     int packages_count = 0; // The number of packets to process before returning. A value of -1 or 0 means to loop forever.
@@ -98,29 +108,51 @@ int capture(int argc, char *argv[]) {
                         "Captured len: {head-capture-len} | "
                         "Origin len: {head-origin-len} | "
                         "Timestamp: {head-time}";
-    arguments->log_file = NULL;
     arguments->device = NULL;
     arguments->hexdump = 0;
     arguments->quiet = 0;
+    arguments->load_pcap = NULL;
 
     argp_parse(&capture_argp, argc, argv, 0, 0, arguments);
 
-    if (arguments->device == NULL) {
-        device = get_first_network_dev(errbuff);
-        if (device == NULL) {
-            ERR_PRINT("Error opening network device: %s\n", errbuff);
-            exit(0);
-        } else {
-            arguments->device = device->name;
-        }
-    }
-    
-    PRINT("Capture on interface: %s\n", arguments->device);
+    DEBUG_MESSAGE("Verbose is set to %d\n", arguments->verbose);
+    DEBUG_MESSAGE("Format is set to %s\n", arguments->format);
+    DEBUG_MESSAGE("Device is set to %s\n", arguments->device);
+    DEBUG_MESSAGE("Hexdump is set to %d\n", arguments->hexdump);
+    DEBUG_MESSAGE("Quiet is set to %d\n", arguments->quiet);
+    DEBUG_MESSAGE("Load Pcap is set to %s\n", arguments->load_pcap);
 
-    package_handle = pcap_open_live(arguments->device, snap_len, promisc, to_ms, errbuff);
-    if (package_handle == NULL) {
-        ERR_PRINT("Could not open device %s: %s\n", device->name, errbuff);
-        exit(0);
+    if (arguments->load_pcap != NULL) {
+        PRINT("Opening pcap file: %s", arguments->load_pcap);
+
+        package_handle = pcap_open_offline(arguments->load_pcap, errbuff);
+
+        if (package_handle == NULL) {
+            ERR_PRINT("Error opening pcap file: %s", errbuff);
+            exit(0);
+        }
+    } else {
+        if (arguments->device == NULL) {
+            device = get_first_network_dev(errbuff);
+            if (device == NULL) {
+                ERR_PRINT("Error opening network device: %s\n", errbuff);
+                exit(0);
+            } else {
+                arguments->device = device->name;
+                DEBUG_MESSAGE("Device is changed to %s\n", arguments->device);
+            }
+        }
+        DEBUG_MESSAGE("Trying to capture on interface: %s", device);
+
+        package_handle = pcap_open_live(arguments->device, snap_len, promisc, to_ms, errbuff);
+
+        if (package_handle == NULL) {
+            ERR_PRINT("Error opening pcap handle: %s", errbuff);
+            exit(0);
+        }
+
+        PRINT("Capture on interface: %s\n", device);
+
     }
 
     pcap_loop(package_handle, packages_count,(pcap_handler) packet_handler, (unsigned char *) arguments);
@@ -128,5 +160,4 @@ int capture(int argc, char *argv[]) {
     pcap_close(package_handle);
     free(device);
     return 0;
-    
 }

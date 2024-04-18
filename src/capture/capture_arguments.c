@@ -28,14 +28,16 @@ const char capture_docs[] = "Capture packets from and to your device.";
     read timeout (in milliseconds)
     snap_len
     promisc
+    pcap_file_in
+    pcap_file_out
 */
 const struct argp_option capture_options[] = {
     {"verbose", 'v', 0, 0, "Produce verbose output"},
     {"format", 'f', "FORMAT", 0, "Specifies output FORMAT for packet capturing"},
-    {"log-file", 'l', "FILE", 0, "Specifies output log FILE"},
     {"device", 'd', "DEVICE", 0, "Specifies the DEVICE to capture from"},
     {"hexdump", 'x', 0, 0, "Output hexdump from package"},
     {"quiet", 'q', 0, 0, "No output to terminal"},
+    {"load-pcap", 500, "FILE", 0, "Load pcap file into program"},
     { 0 }
 };
 
@@ -56,9 +58,6 @@ error_t capture_parse_opt(int key, char *arg, struct argp_state *state){
     case 'f':
         arguments->format = arg;
         break;
-    case 'l':
-        arguments->log_file = arg;
-        break;
     case 'd':
         arguments->device = arg;
         break;
@@ -67,6 +66,9 @@ error_t capture_parse_opt(int key, char *arg, struct argp_state *state){
         break;
     case 'q':
         arguments->quiet = 1;
+        break;
+    case 500:
+        arguments->load_pcap = arg;
         break;
     default:
         return ARGP_ERR_UNKNOWN;

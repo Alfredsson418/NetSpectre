@@ -38,7 +38,6 @@ void packet_handler(struct capture_arguments * arguments , const struct pcap_pkt
 */
 void bin_to_mac(uint8_t mac_bin[6], char mac[18]);
 
-
 /*
     int capture();
         Usage:
