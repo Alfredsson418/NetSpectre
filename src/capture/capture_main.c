@@ -71,7 +71,7 @@ int capture(int argc, char *argv[]) {
     "Layer 3:\n"
     "   IPv4-SRC: {ipv4-src}\n"
     "   IPv4-DST: {ipv4-dst}\n"
-    "   Protocol: {l3-prot}({l3-prot-num})\n";
+    "   Protocol: {l3-prot}({l3-prot-num})";
     arguments->hexdump = 0;
     arguments->device = NULL;
     arguments->pcap_load = NULL;
