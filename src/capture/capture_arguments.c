@@ -24,20 +24,21 @@ const char capture_docs[] = "Capture packets from and to your device.";
 */
 /*
     ----to add----
-    packages_count
     read timeout (in milliseconds)
     snap_len
     promisc
     pcap_file_out
 */
 const struct argp_option capture_options[] = {
-    {"verbose", 'v', 0, 0, "Produce verbose output"},
-    {"format", 'f', "FORMAT", 0, "Specifies output FORMAT for packet capturing"},
+    {"verbose", 'v', 0, 0, "Verbose output"},
+    {"debug", 503, 0, 0, "Debug output"},
+    {"quiet", 'q', 0, 0, "No output to terminal (Error and Debug will still display)"},
+    {"format", 500, "FORMAT", 0, "Specifies output FORMAT for packet capturing"},
     {"device", 'd', "DEVICE", 0, "Specifies the DEVICE to capture from"},
-    {"hexdump", 'x', 0, 0, "Output hexdump from package"},
-    {"quiet", 'q', 0, 0, "No output to terminal"},
-    {"pcap-load", 500, "FILE", 0, "Load pcap file into program"},
-    {"filter", 600, "FILTER", 0, "Filter captured traffic"},
+    {"hexdump", 501, 0, 0, "Output hexdump from package"},
+    {"pcap-load", 502, "FILE", 0, "Load pcap file into program"},
+    {"filter", 'f', "FILTER", 0, "Filter captured traffic"},
+    {"capture-amount", 504, "AMOUNT", 0, "The amount of packages you want to capture (0 too loop forever)"},
     { 0 }
 };
 
@@ -53,25 +54,31 @@ error_t capture_parse_opt(int key, char *arg, struct argp_state *state){
     
     switch (key) {
     case 'v':
-        g_verboseEnabled = 1;
+        g_verbose_enabled = 1;
         break;
-    case 'f':
+    case 500:
         arguments->format = arg;
         break;
     case 'd':
         arguments->device = arg;
         break;
-    case 'x':
+    case 501:
         arguments->hexdump = 1;
         break;
-    case 'q':
-        arguments->quiet = 1;
-        break;
-    case 500:
+    case 502:
         arguments->pcap_load = arg;
         break;
-    case 600:
+    case 'f':
         arguments->filter = arg;
+        break;
+    case 503:
+        g_debug_enabled = 1;
+        break;
+    case 504:
+        arguments->capture_amount = atoi(arg);
+        break;
+    case 'q':
+        g_no_terminal_output = 1;
         break;
     default:
         return ARGP_ERR_UNKNOWN;

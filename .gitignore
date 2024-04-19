@@ -2,7 +2,7 @@
 # Files
 netspec
 log.txt
-pcap_test.pcap
+*.pcap
 
 # Folders
 build

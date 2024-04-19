@@ -1,4 +1,47 @@
-#include "../../include/capture/capture_format.h"
+#include "../../include/capture/packet_info.h"
+
+// Callback function for pcap_loop
+void packet_handler(struct capture_arguments * arguments ,const struct pcap_pkthdr *packet_header, const unsigned char *packet) {
+
+    /*
+        sniff_ethernet 	X
+        sniff_ip 	X + SIZE_ETHERNET
+        sniff_tcp 	X + SIZE_ETHERNET + {IP header length}
+        payload 	X + SIZE_ETHERNET + {IP header length} + {TCP header length}
+    
+    */
+    
+    // String does not change
+    char * string = arguments->format;
+    if (strstr(string, "\\n")) {
+        string = replace_substring(string, "\\n", "\n");
+    }
+    if (strstr(string, "\\t")) {
+        string = replace_substring(string, "\\t", "\t");
+    }
+    if (strstr(string, "\\v")) {
+        string = replace_substring(string, "\\v", "\v");
+    }
+
+    packet_header_info(packet_header, &string);
+
+    /*
+        The size of the Ethernet header is typically 14 bytes (sizeof(struct ether_header)),
+        and the size of the IP header can be calculated from the ihl field of the iphdr struct,
+        which represents the header length in 32-bit words. To convert this to bytes, you multiply by 4.
+    */
+    l2_packet_info(packet, &string);
+    l3_packet_info(packet, &string);
+
+    /*
+    if (arguments->hexdump) {
+        unsigned char *payload = (unsigned char *)(packet + sizeof(struct ether_header) + ip->ihl*4);
+        int payload_length = packet_header->len - sizeof(struct ether_header) - ip->ihl*4;
+        hexdump(payload, payload_length, 16);
+    }
+    */
+    PRINT("%s\n", string);
+}   
 
 void packet_header_info(const struct pcap_pkthdr *packet_header, char **format) {
     
@@ -14,19 +57,15 @@ void packet_header_info(const struct pcap_pkthdr *packet_header, char **format) 
     replace_format(format, "{head-capture-len}", capture_len);
     replace_format(format, "{head-origin-len}", origin_len);
     replace_format(format, "{head-time}", time_sec);
-
-    
-
-    // printf("Packet capture length: %d  ", packet_header->caplen);
-    // printf("Packet total length %d  ", packet_header->len);
-    // printf("Timestamp: %ld.%06ld  \n", packet_header->ts.tv_sec, packet_header->ts.tv_usec);
 }
 
-
-void l2_packet_info(struct ether_header *eth, char * eth_prot, char **format) {
+void l2_packet_info(const unsigned char *packet, char **format) {
     char mac_src[18] = {0};
     char mac_dst[18] = {0};
     
+    struct ether_header *eth = (struct ether_header *)packet;
+    
+
     if (eth != NULL) {
         bin_to_mac(eth->ether_dhost, mac_dst);
         bin_to_mac(eth->ether_shost, mac_src);
@@ -34,11 +73,10 @@ void l2_packet_info(struct ether_header *eth, char * eth_prot, char **format) {
 
     replace_format(format, "{mac-src}", mac_src);
     replace_format(format, "{mac-dst}", mac_dst);
-    replace_format(format, "{mac-prot}", eth_prot);
-    
+    replace_format(format, "{mac-prot}", determine_packet_protocol(eth->ether_type, 2));
 }
 
-void l3_packet_info(struct iphdr *ip, char **format) {
+void l3_packet_info(const unsigned char *packet, char **format) {
     /*
         unsigned char ihl: The Internet Header Length (IHL) field. This represents the length of the IP header in 32-bit words. The minimum value is 5, which corresponds to a header length of 20 bytes.
         unsigned char version: The version of the IP protocol. For IPv4, this is always 4.
@@ -52,13 +90,18 @@ void l3_packet_info(struct iphdr *ip, char **format) {
         unsigned int saddr: The source IP address.
         unsigned int daddr: The destination IP address.
     */
+    struct ether_header *eth = (struct ether_header *)packet;
+    struct iphdr * ip = (struct iphdr *)(packet + sizeof(struct ether_header)); // Skip the Ethernet header;
+
     char src_ip[INET_ADDRSTRLEN];
     char dst_ip[INET_ADDRSTRLEN];
     char str[4] = {0};
     char *ip_protocol = NULL;
     struct in_addr src_addr, dst_addr;
+    char ttl [4]= {0};
+    char version[4] = {0};
 
-    if (ip != NULL) {
+    if (ip != NULL && ntohs(eth->ether_type) == 0x0800) {
         dst_addr.s_addr = ip->daddr;
         strncpy(dst_ip, inet_ntoa(dst_addr), INET_ADDRSTRLEN);
 
@@ -67,12 +110,16 @@ void l3_packet_info(struct iphdr *ip, char **format) {
         strncpy(src_ip, inet_ntoa(src_addr), INET_ADDRSTRLEN);
         
         ip_protocol = determine_packet_protocol(ip->protocol, 3);
-        sprintf(str, "%d", ip->protocol);
+        sprintf(str, "%u", ip->protocol);
+        sprintf(ttl, "%u", ip->ttl);
+        sprintf(version, "%u", ip->version);
     } 
     
     replace_format(format, "{ipv4-src}", src_ip);
     replace_format(format, "{ipv4-dst}", dst_ip);
-    replace_format(format, "{ipv4-prot}", ip_protocol);
-    replace_format(format, "{ipv4-prot-num}", str);
+    replace_format(format, "{l3-prot}", ip_protocol);
+    replace_format(format, "{l3-prot-vers}", version);
+    replace_format(format, "{l3-prot-num}", str);
+    replace_format(format, "{ttl}", ttl);
 }
 
