@@ -1,3 +1,10 @@
+# Usage
+`netspec capture [options]`
+### For help
+`netspec capture --usage`  
+`netspec capture --help`    
+
+# Options 
 ## Verbose
 `--verbose` `-v`  
 Produce verbose output.
@@ -27,7 +34,7 @@ Package header: \n
  Layer 3:\n
     IPv4-SRC: {ipv4-src}\n
     IPv4-DST: {ipv4-dst}\n
-    Protocol: {ipv4-prot}({ipv4-prot-num})\n
+    Protocol: {ipv4-prot}({ipv4-prot-num})
 ```
 Valid `FILTER` arguments
 * `head-capture-len` Captured size

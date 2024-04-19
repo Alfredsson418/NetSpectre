@@ -35,7 +35,7 @@ const struct argp_option capture_options[] = {
     {"quiet", 'q', 0, 0, "No output to terminal (Error and Debug will still display)"},
     {"format", 500, "FORMAT", 0, "Specifies output FORMAT for packet capturing"},
     {"device", 'd', "DEVICE", 0, "Specifies the DEVICE to capture from"},
-    {"hexdump", 501, 0, 0, "Output hexdump from package"},
+    {"hexdump", 'x', 0, 0, "Output hexdump from package"},
     {"pcap-load", 502, "FILE", 0, "Load pcap file into program"},
     {"filter", 'f', "FILTER", 0, "Filter captured traffic"},
     {"capture-amount", 504, "AMOUNT", 0, "The amount of packages you want to capture (0 too loop forever)"},
@@ -62,7 +62,7 @@ error_t capture_parse_opt(int key, char *arg, struct argp_state *state){
     case 'd':
         arguments->device = arg;
         break;
-    case 501:
+    case 'x':
         arguments->hexdump = 1;
         break;
     case 502:

@@ -7,55 +7,47 @@ void hexdump (const unsigned char * payload, const int len, int perLine) {
 
     int i;
     unsigned char buff[perLine+1];
-    
+
 
     // Length checks.
-
     if (len == 0) {
-        printf("  ZERO LENGTH\n");
+        ERR_PRINT("Hexdump: ZERO LENGTH\n", NULL);
         return;
     }
     if (len < 0) {
-        printf("  NEGATIVE LENGTH: %d\n", len);
+        ERR_PRINT("Hexdump: NEGATIVE LENGTH: %d\n", len);
         return;
     }
 
     // Process every byte in the data.
-
     for (i = 0; i < len; i++) {
         // Multiple of perLine means new or first line (with line offset).
 
         if ((i % perLine) == 0) {
-            // Only print previous-line ASCII buffer for lines beyond first.
+            // Print buffer.
+            if (i != 0) PRINT("  %s\n", buff);
 
-            if (i != 0) printf ("  %s\n", buff);
-
-            // Output the offset of current line.
-
-            printf ("  %04x ", i);
+            // Line number.
+            PRINT("  %04x ", i);
         }
 
-        // Now the hex code for the specific character.
-
-        printf (" %02x", payload[i]);
+        // Hex code for the specific character.
+        PRINT(" %02x", payload[i]);
 
         // And buffer a printable ASCII character for later.
-
-        if ((payload[i] < 0x20) || (payload[i] > 0x7e)) // isprint() may be better.
+        if ((payload[i] < 0x20) || (payload[i] > 0x7e))
             buff[i % perLine] = '.';
         else
             buff[i % perLine] = payload[i];
         buff[(i % perLine) + 1] = '\0';
     }
 
-    // Pad out last line if not exactly perLine characters.
-
+    // Print out empty space
     while ((i % perLine) != 0) {
-        printf ("   ");
+        PRINT("   ", NULL);
         i++;
     }
 
-    // And print the final ASCII buffer.
-
-    printf ("  %s\n", buff);
+    // Last line remaining buffer.
+    PRINT("  %s\n", buff);
 }

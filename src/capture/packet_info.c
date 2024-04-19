@@ -32,15 +32,17 @@ void packet_handler(struct capture_arguments * arguments ,const struct pcap_pkth
     */
     l2_packet_info(packet, &string);
     l3_packet_info(packet, &string);
-
-    /*
-    if (arguments->hexdump) {
-        unsigned char *payload = (unsigned char *)(packet + sizeof(struct ether_header) + ip->ihl*4);
-        int payload_length = packet_header->len - sizeof(struct ether_header) - ip->ihl*4;
-        hexdump(payload, payload_length, 16);
-    }
-    */
     PRINT("%s\n", string);
+    
+    if (arguments->hexdump) {
+        // unsigned char *payload = (unsigned char *)(packet + sizeof(struct ether_header) + sizeof(struct iphdr));
+        // int payload_length = packet_header->len - sizeof(struct ether_header) + sizeof(struct iphdr);
+        PRINT("HEXDUMP:\n", NULL);
+        hexdump((unsigned *) packet, packet_header->len, 16);
+        PRINT("\n", NULL);
+    }
+    
+
 }   
 
 void packet_header_info(const struct pcap_pkthdr *packet_header, char **format) {
