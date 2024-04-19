@@ -3,6 +3,7 @@
 netspec
 log.txt
 *.pcap
+future.txt
 
 # Folders
 build
