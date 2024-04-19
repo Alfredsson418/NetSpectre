@@ -23,12 +23,11 @@ const char capture_docs[] = "Capture packets from and to your device.";
      DOC    – A documentation string for this option, shown in –help output
 */
 /*
-    to add
+    ----to add----
     packages_count
     read timeout (in milliseconds)
     snap_len
     promisc
-    pcap_file_in
     pcap_file_out
 */
 const struct argp_option capture_options[] = {
@@ -37,7 +36,8 @@ const struct argp_option capture_options[] = {
     {"device", 'd', "DEVICE", 0, "Specifies the DEVICE to capture from"},
     {"hexdump", 'x', 0, 0, "Output hexdump from package"},
     {"quiet", 'q', 0, 0, "No output to terminal"},
-    {"load-pcap", 500, "FILE", 0, "Load pcap file into program"},
+    {"pcap-load", 500, "FILE", 0, "Load pcap file into program"},
+    {"filter", 600, "FILTER", 0, "Filter captured traffic"},
     { 0 }
 };
 
@@ -68,7 +68,10 @@ error_t capture_parse_opt(int key, char *arg, struct argp_state *state){
         arguments->quiet = 1;
         break;
     case 500:
-        arguments->load_pcap = arg;
+        arguments->pcap_load = arg;
+        break;
+    case 600:
+        arguments->filter = arg;
         break;
     default:
         return ARGP_ERR_UNKNOWN;

@@ -5,6 +5,12 @@
     You should be able to read and see what these packages contain
 */
 
+pcap_t *package_handle;
+
+void handle_sigint(int sig) { 
+    pcap_breakloop(package_handle);
+} 
+
 // Callback function for pcap_loop
 void packet_handler(struct capture_arguments * arguments ,const struct pcap_pkthdr *packet_header, const unsigned char *packet) {
 
@@ -71,13 +77,11 @@ void bin_to_mac(uint8_t mac_bin[6], char mac[18]) {
 
 }
 
-
 // This could be handled as the main function for packet capturing
 int capture(int argc, char *argv[]) {
     char errbuff[PCAP_ERRBUF_SIZE]; // Error Buffer
 
     // Varibles for pcap_open_live
-    struct network_device * device; // Network device to fetch packages from
     int snap_len = 65663; // The maximum number of bytes to capture from each packet.
     /*
         If promisc is set to 1, the interface will be put into promiscuous mode.
@@ -87,7 +91,10 @@ int capture(int argc, char *argv[]) {
     */ 
     int promisc = 1;  
     int to_ms = -1; // The read timeout in milliseconds. A value of -1 means to wait indefinitely for a packet.
-    pcap_t *package_handle = NULL; // Packet capture handle
+    package_handle = NULL; // Packet capture handle
+
+    // Varibles for filtering
+    struct bpf_program filter;
 
     // Varibles for pcap_loop
     int packages_count = 0; // The number of packets to process before returning. A value of -1 or 0 means to loop forever.
@@ -108,10 +115,11 @@ int capture(int argc, char *argv[]) {
                         "Captured len: {head-capture-len} | "
                         "Origin len: {head-origin-len} | "
                         "Timestamp: {head-time}";
-    arguments->device = NULL;
     arguments->hexdump = 0;
     arguments->quiet = 0;
-    arguments->load_pcap = NULL;
+    arguments->device = NULL;
+    arguments->pcap_load = NULL;
+    arguments->filter = NULL;
 
     argp_parse(&capture_argp, argc, argv, 0, 0, arguments);
 
@@ -120,44 +128,70 @@ int capture(int argc, char *argv[]) {
     DEBUG_MESSAGE("Device is set to %s\n", arguments->device);
     DEBUG_MESSAGE("Hexdump is set to %d\n", arguments->hexdump);
     DEBUG_MESSAGE("Quiet is set to %d\n", arguments->quiet);
-    DEBUG_MESSAGE("Load Pcap is set to %s\n", arguments->load_pcap);
+    DEBUG_MESSAGE("Load Pcap is set to %s\n", arguments->pcap_load);
 
-    if (arguments->load_pcap != NULL) {
-        PRINT("Opening pcap file: %s", arguments->load_pcap);
+    /* Determines how to load packages */
+    if (arguments->pcap_load != NULL) { /* Load pcap file */
+        PRINT("Opening pcap file: %s\n", arguments->pcap_load);
 
-        package_handle = pcap_open_offline(arguments->load_pcap, errbuff);
+        package_handle = pcap_open_offline(arguments->pcap_load, errbuff);
 
         if (package_handle == NULL) {
-            ERR_PRINT("Error opening pcap file: %s", errbuff);
+            ERR_PRINT("Error opening pcap file\n", NULL);
+            DEBUG_MESSAGE("%s\n", errbuff);
             exit(0);
         }
-    } else {
+    } else { /* Packages though network device */
         if (arguments->device == NULL) {
-            device = get_first_network_dev(errbuff);
-            if (device == NULL) {
-                ERR_PRINT("Error opening network device: %s\n", errbuff);
+            arguments->device = get_first_network_dev();
+            if (arguments->device == NULL) {
+                ERR_PRINT("Error opening network device\n", NULL);
+                DEBUG_MESSAGE("%s\n", errbuff);
                 exit(0);
             } else {
-                arguments->device = device->name;
                 DEBUG_MESSAGE("Device is changed to %s\n", arguments->device);
             }
         }
-        DEBUG_MESSAGE("Trying to capture on interface: %s", device);
+        DEBUG_MESSAGE("Trying to capture on interface: %s\n", arguments->device);
 
         package_handle = pcap_open_live(arguments->device, snap_len, promisc, to_ms, errbuff);
 
         if (package_handle == NULL) {
-            ERR_PRINT("Error opening pcap handle: %s", errbuff);
+            ERR_PRINT("Error opening pcap handle: %s\n", errbuff);
             exit(0);
         }
 
-        PRINT("Capture on interface: %s\n", device);
+        PRINT("Capture on interface: %s\n", arguments->device);
 
     }
 
+    signal(SIGINT, handle_sigint);
+
+
+    /* Filtering */
+    DEBUG_MESSAGE("Compiling filter: %s\n", arguments->filter); 
+    if (pcap_compile(package_handle, &filter, arguments->filter, 0, 0) == -1) {
+        ERR_PRINT("Bad filter - %s\n", pcap_geterr(package_handle));
+        return 2;
+    }
+    DEBUG_MESSAGE("Filter compiled!\n", NULL);
+
+    DEBUG_MESSAGE("Adding filter...\n", NULL);
+    if (pcap_setfilter(package_handle, &filter) == -1) {
+        ERR_PRINT("Error setting filter - %s\n", pcap_geterr(package_handle));
+        return 2;
+    }
+    DEBUG_MESSAGE("Filter added!\n", NULL);
+
     pcap_loop(package_handle, packages_count,(pcap_handler) packet_handler, (unsigned char *) arguments);
-    // pcap_breakloop exists
+
+    
+    DEBUG_MESSAGE("Freeing varibles...\n", NULL);
     pcap_close(package_handle);
-    free(device);
+    free(arguments->device);
+    free(arguments);
+    DEBUG_MESSAGE("Varibles freed!\n", NULL);
+
+    PRINT("STOPPING PROGRAM!!!\n", NULL);
     return 0;
 }

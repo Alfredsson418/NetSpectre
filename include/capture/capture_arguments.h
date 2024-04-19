@@ -2,16 +2,18 @@
 #define CAPTURE_ARGUMENTS_H
 
 #include "../../include/netspectre.h"
+#include "network_device.h"
 
 extern const struct argp_option capture_options[];
 
 struct capture_arguments {
     int verbose;
-    const char * format;
+    char * format;
     char * device;
     int hexdump;
     int quiet;
-    char * load_pcap;
+    char * pcap_load;
+    char * filter;
 };
 /*
     error_t capture_parse_opt(int key, char *arg, struct argp_state *state);

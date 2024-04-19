@@ -12,6 +12,7 @@
 #include <stdbool.h>
 // https://www.gnu.org/software/libc/manual/html_node/Argp-Example-3.html
 #include <argp.h>
+#include <signal.h>
 
 #include "other/outputs.h"
 
