@@ -1,5 +1,5 @@
 #include "../include/netspectre.h"
-#include "../include/capture/packet_capture.h"
+#include "../include/capture/capture_main.h"
 
 /*
     This is the main file where all the "outgoing commands" are sent like scan and capture

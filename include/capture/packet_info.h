@@ -1,16 +1,11 @@
-#ifndef PACKET_CAPTURE_H
-#define PACKET_CAPTURE_H
+#ifndef CAPTURE_OUTPUT_FORMAT_H
+#define CAPTURE_OUTPUT_FORMAT_H
 
-
-
-#include "../netspectre.h"
+#include "../../include/netspectre.h"
+#include "protocol_maps.h"
 #include "capture_arguments.h"
-#include "network_device.h"
-#include "capture_format.h"
+#include "capture_main.h"
 #include "../other/replace.h"
-#include "../other/hexdump.h"
-
-
 
 /*
     void packet_handler(unsigned char *args,const struct pcap_pkthdr *packet_header, const unsigned char *packet);
@@ -28,21 +23,29 @@
 void packet_handler(struct capture_arguments * arguments , const struct pcap_pkthdr *packet_header, const unsigned char *packet);
 
 
+void packet_header_info(const struct pcap_pkthdr *packet_header, char **format);
+
 /*
-    void convert_mac_from_byte(uint8_t mac_bin[6], char mac[18]);
+    void print_packet_info(const unsigned char *packet, struct pcap_pkthdr packet_header);
         Usage:
-            mac_bin: Mac address in representet in binary
-            mac: The function writes the MAC address to this varible
+            header: Metadata about captured packet
+            packet: The frame or packet that was captured.
+            arguments: The program arguments
         Return:
             Void
 */
-void bin_to_mac(uint8_t mac_bin[6], char mac[18]);
+void l2_packet_info(const unsigned char *packet, char **format);
+
 
 /*
-    int capture();
+    void print_packet_info(const unsigned char *packet, struct pcap_pkthdr packet_header);
         Usage:
-            Used as the main function to capture packets
+            header: Metadata about captured packet
+            packet: The frame or packet that was captured.
+            arguments: The program arguments
+        Return:
+            Void
 */
-int capture(int argc, char *argv[]);
+void l3_packet_info(const unsigned char *packet, char **format);
 
 #endif

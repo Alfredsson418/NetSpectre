@@ -3,25 +3,28 @@
 
 #include "../netspectre.h"
 
-extern int g_verboseEnabled;
-extern int g_debugEnabled;
+extern int g_verbose_enabled;
+extern int g_debug_enabled;
+extern int g_no_terminal_output;
 
 #define VERBOSE_MESSAGE(fmt, ...)\
 do{\
-    if(g_verboseEnabled) fprintf(stdout, fmt, __VA_ARGS__);\
+    if(g_verbose_enabled && !g_no_terminal_output) fprintf(stdout, fmt, __VA_ARGS__);\
 }while(0)
 
 #define DEBUG_MESSAGE(fmt, ...)\
 do{\
-    if(g_debugEnabled) {\
+    if(g_debug_enabled) {\
         fprintf(stdout, "DEBUG: ");\
         fprintf(stdout, fmt, __VA_ARGS__);\
-    } \
+    }\
 }while(0)
 
 #define PRINT(fmt, ...)\
 do{\
-    fprintf(stdout, fmt, __VA_ARGS__);\
+    if (!g_no_terminal_output) {\
+        fprintf(stdout, fmt, __VA_ARGS__);\
+    }\
 }while(0)
 
 #define ERR_PRINT(fmt, ...)\
