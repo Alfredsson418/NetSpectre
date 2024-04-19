@@ -9,7 +9,7 @@
 int main(int argc, char *argv[]) {
     // Always 1 or more becase name of file is first
     if (argc < 2) {
-        printf("No arguments detected! Exiting! \n");
+        ERR_PRINT("No arguments detected! Exiting! \n", NULL);
         exit(0);
     }
     
@@ -31,19 +31,12 @@ int main(int argc, char *argv[]) {
         processed_argv[i - 1] = argv[i];
     }
 
-    // Print the merged array
-    /*
-    for (int i = 0; i < argc - 1; i++) {
-        printf("%s\n", processed_argv[i]);
-    }
-    */
-
     if (strcasecmp(argv[1], "capture") == 0) {
         capture(argc -1, processed_argv);
     }else if (strcasecmp(argv[1], "scan") == 0) {
         // scan();
     } else {
-        printf("Did not recognice command! Exiting! \n");
+        ERR_PRINT("Did not recognice command! Exiting! \n", NULL);
         exit(0);
     }
 
