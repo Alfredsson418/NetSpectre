@@ -1,6 +1,5 @@
-#include "../headers/netspectre.h"
-#include "../headers/scan.h"
-#include "../headers/packet_capture.h"
+#include "../include/netspectre.h"
+#include "../include/capture/packet_capture.h"
 
 /*
     This is the main file where all the "outgoing commands" are sent like scan and capture
@@ -13,15 +12,43 @@ int main(int argc, char *argv[]) {
         printf("No arguments detected! Exiting! \n");
         exit(0);
     }
+    
+    // Create a new array to store the merged strings
+    char *processed_argv[argc - 1];
+
+    /*
+        Merge the first and second arguments into the format "%s %s"
+        The merge is nessesary because to show the help and usage command correctly for argp
+    */
+    char *merged_string = malloc(strlen(argv[0]) + strlen(argv[1]) + 2);
+    sprintf(merged_string, "%s %s", argv[0], argv[1]);
+
+    // Store the merged string in the new array
+    processed_argv[0] = merged_string;
+
+    // Copy the remaining arguments to the new array
+    for (int i = 2; i < argc; i++) {
+        processed_argv[i - 1] = argv[i];
+    }
+
+    // Print the merged array
+    /*
+    for (int i = 0; i < argc - 1; i++) {
+        printf("%s\n", processed_argv[i]);
+    }
+    */
 
     if (strcasecmp(argv[1], "capture") == 0) {
-        capture();
+        capture(argc -1, processed_argv);
     }else if (strcasecmp(argv[1], "scan") == 0) {
-        scan();
-
+        // scan();
     } else {
         printf("Did not recognice command! Exiting! \n");
         exit(0);
     }
+
+    free(merged_string);
+
+    return 0;
     
 }

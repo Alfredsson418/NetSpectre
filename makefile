@@ -5,28 +5,34 @@ NAME = netspec
 BUILD = build
 SRC = src
 
-FLAGS = -lpcap -Wall
+CFLAGS = -Wall -g
+LDFLAGS = -lpcap
 
-SRCFILES = $(wildcard $(SRC)/*.c)
+# Get all the source files in the SRC directory and its subdirectories
+SRCFILES = $(wildcard $(SRC)/*.c) $(wildcard $(SRC)/**/*.c) 
+
+# Generate object file names from source file names
 OBJFILES = $(patsubst $(SRC)/%.c, $(BUILD)/%.o, $(SRCFILES))
 
-.PHONY: build dirs clean memCheck
+.PHONY: build clean memCheck
 
-build: $(OBJFILES) 
+# Target to build the executable
+build: $(OBJFILES)
 	@echo "Building $(NAME)"
-	@$(CC) $^ -o $(NAME) $(FLAGS)
+	@$(CC) $(CFLAGS) $^ -o $(NAME) $(LDFLAGS)
 	@echo "Done!"
 
-$(BUILD)/%.o: $(SRC)/%.c | dirs
+# Rule to compile each source file into an object file
+$(BUILD)/%.o: $(SRC)/%.c
+	@mkdir -p $(@D)
 	@echo "Compiling $<"
-	@$(CC) -c -o $@ $<
+	@$(CC) $(CFLAGS) -c -o $@ $<
 
-dirs: 
-	@mkdir -p $(BUILD)
-
+# Target to run memory check using Valgrind
 memCheck:
 	-sudo valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --verbose --log-file=log.txt ./$(NAME)
 
+# Target to clean up generated files
 clean:
 	@rm -f $(OBJFILES) $(NAME)
 	@rm -r $(BUILD)

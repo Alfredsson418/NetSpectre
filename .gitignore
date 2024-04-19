@@ -1,9 +1,12 @@
 # Project specific
 # Files
 netspec
+log.txt
+pcap_test.pcap
 
 # Folders
 build
+.vscode
 
 
 
