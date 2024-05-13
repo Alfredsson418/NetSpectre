@@ -1,5 +1,5 @@
-#ifndef PACKET_CAPTURE_H
-#define PACKET_CAPTURE_H
+#ifndef CAPTURE_MAIN_H
+#define CAPTURE_MAIN_H
 
 
 

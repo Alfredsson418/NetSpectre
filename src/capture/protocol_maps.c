@@ -63,7 +63,7 @@ const struct protocol_mapping l2_protocol_map[] = {
 };
 
 
-
+// https://www.iana.org/assignments/protocol-numbers/protocol-numbers.xhtml
 const struct protocol_mapping l3_protocol_map[] = {
     {0x00, "HOPOPT"}, // IPv6 Hop-by-Hop Option
     {0x01, "ICMP"}, // Internet Control Message

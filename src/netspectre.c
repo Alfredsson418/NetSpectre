@@ -1,5 +1,6 @@
 #include "../include/netspectre.h"
 #include "../include/capture/capture_main.h"
+#include "../include/scan/scan_main.h"
 
 /*
     This is the main file where all the "outgoing commands" are sent like scan and capture
@@ -34,7 +35,7 @@ int main(int argc, char *argv[]) {
     if (strcasecmp(argv[1], "capture") == 0) {
         capture(argc -1, processed_argv);
     }else if (strcasecmp(argv[1], "scan") == 0) {
-        // scan();
+        scan(argc -1, processed_argv);
     } else {
         ERR_PRINT("Did not recognice command! Exiting! \n", NULL);
         exit(0);

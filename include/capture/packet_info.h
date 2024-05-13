@@ -1,5 +1,5 @@
-#ifndef CAPTURE_OUTPUT_FORMAT_H
-#define CAPTURE_OUTPUT_FORMAT_H
+#ifndef PACKET_INFO_H
+#define PACKET_INFO_H
 
 #include "../../include/netspectre.h"
 #include "protocol_maps.h"
