@@ -1,4 +1,6 @@
 /*
+I AM NEW TO SOCKET PROGRAMMING IN C SO THIS IS JUST FOR NOW WHILE I LEARN
+
 SOCK_STREAM to create a TCP socket instead.
 
 After creating the socket, you need to set up a sockaddr_in structure for the target address.
@@ -18,14 +20,14 @@ where the loop variable is the port number.
 
 #include "../../include/scan/tcp_scan.h"
 
-void tcp_scan(char ip[IPV4_ADDR_STR_LEN], int port) {
+int tcp_scan(char ip[IPV4_ADDR_STR_LEN], int port) {
 
     int sock = socket(AF_INET, SOCK_STREAM, 0);
 
 
     if (sock < 0) {
         ERR_PRINT("ERROR creating TCP socket!", NULL);
-        return;
+        return -1;
     }
 
     struct sockaddr_in addr;
@@ -36,15 +38,14 @@ void tcp_scan(char ip[IPV4_ADDR_STR_LEN], int port) {
     addr.sin_port = htons(port);
     if (inet_pton(AF_INET, ip, &addr.sin_addr) <= 0) {
         ERR_PRINT("Invalid address/ Address not supported \n", NULL);
-        return;
+        return -1;
     }
 
     if (connect(sock, (struct sockaddr *)&addr, sizeof(addr)) < 0) {
-        PRINT("PORT %d IS NOT OPEN\n", port);
-    } else {
-        PRINT("CONNECTED ON ADDR %s ON PORT %d\n", ip, port);
+        // No connection
+        close(sock);
+        return 0;
     }
-
     close(sock);
-
+    return 1;
 }

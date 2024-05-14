@@ -7,7 +7,7 @@ int scan(int argc, char *argv[]) {
         return 1;
     }
 
-    tcp_scan(argv[1], atoi(argv[2]));
+    udp_scan(argv[1], atoi(argv[2]));
 
     return 0;
 

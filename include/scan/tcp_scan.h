@@ -3,6 +3,6 @@
 
 #include "../netspectre.h"
 
-void tcp_scan(char ip[IPV4_ADDR_STR_LEN], int port);
+int tcp_scan(char ip[IPV4_ADDR_STR_LEN], int port);
 
 #endif

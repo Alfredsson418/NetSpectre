@@ -1,4 +1,6 @@
 /*
+I AM NEW TO SOCKET PROGRAMMING IN C SO THIS IS JUST FOR NOW WHILE I LEARN
+
 A half-open SYN scan, also known as a stealth scan,
 is a type of port scan where you send a SYN packet,
 as if you are going to open a full TCP connection,

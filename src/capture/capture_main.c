@@ -36,7 +36,7 @@ int capture(int argc, char *argv[]) {
     char errbuff[PCAP_ERRBUF_SIZE]; // Error Buffer
 
     // Varibles for pcap_open_live
-    int snap_len = 65663; // The maximum number of bytes to capture from each packet.
+    int snap_len = MAX_PACKET_SIZE; // The maximum number of bytes to capture from each packet.
     /*
         If promisc is set to 1, the interface will be put into promiscuous mode.
         This means that all packets on the network, not just those destined
