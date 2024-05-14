@@ -15,7 +15,7 @@
 typedef struct {
     struct pcap_pkthdr * packet_header;
     unsigned char * packet;
-    char filter[50];
+    char filter[60];
 } next_best_args;
 
 void * run_next_best_packet(void * arg) {
@@ -34,10 +34,10 @@ int udp_scan(char ip[IPV4_ADDR_STR_LEN], int port) {
     // Create a struct that holds the arguments for run_next_best_packet
     next_best_args args;
     args.packet = calloc(MAX_PACKET_SIZE + 1, sizeof(char));
+    // First is the udp dst port, second and this is too check if it is dst and por unrech
+    sprintf(args.filter, "(icmp[30:2] == %#06x) && (icmp[0] == 3) && (icmp[1] == 3)", port);
 
-    sprintf(args.filter, "ip proto \\icmp or dst port %d", port);
-
-
+    PRINT("%s\n", args.filter);
     if (pthread_create(&thread_id, NULL, run_next_best_packet, &args) != 0) {
         ERR_PRINT("Failed to create thread\n", NULL);
         return 1;
@@ -65,7 +65,7 @@ int udp_scan(char ip[IPV4_ADDR_STR_LEN], int port) {
         return -1;
     }
     sleep(1);
-    if (sendto(sock, 0, 0, 0, (struct sockaddr *)&addr, sizeof(addr)) < 0) {
+    if (sendto(sock, "hello", 6, 0, (struct sockaddr *)&addr, sizeof(addr)) < 0) {
         ERR_PRINT("ERROR SENDING UDP PACKAGE\n", NULL);
         close(sock);
         return -1;
