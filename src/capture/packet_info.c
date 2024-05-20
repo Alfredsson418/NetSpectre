@@ -12,15 +12,17 @@ void packet_handler(struct capture_arguments * arguments ,const struct pcap_pkth
     */
     
     // String does not change
-    char * string = arguments->format;
+    char * string = calloc(strlen(arguments->format) + 1, sizeof(char));
+    memset(string, '\0', sizeof(string));
+    strcpy(string, arguments->format);
     if (strstr(string, "\\n")) {
-        string = replace_substring(string, "\\n", "\n");
+        replace_substring(string, "\\n", "\n");
     }
     if (strstr(string, "\\t")) {
-        string = replace_substring(string, "\\t", "\t");
+        replace_substring(string, "\\t", "\t");
     }
     if (strstr(string, "\\v")) {
-        string = replace_substring(string, "\\v", "\v");
+        replace_substring(string, "\\v", "\v");
     }
 
     packet_header_info(packet_header, &string);
@@ -42,7 +44,7 @@ void packet_handler(struct capture_arguments * arguments ,const struct pcap_pkth
         PRINT("\n", NULL);
     }
     
-
+    free(string);
 }   
 
 void packet_header_info(const struct pcap_pkthdr *packet_header, char **format) {

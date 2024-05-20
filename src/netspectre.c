@@ -36,6 +36,13 @@ int main(int argc, char *argv[]) {
         capture(argc -1, processed_argv);
     }else if (strcasecmp(argv[1], "scan") == 0) {
         scan(argc -1, processed_argv);
+    }else if (strcasecmp(argv[1], "test") == 0) {
+        char * str = calloc(strlen("{tes{test} alsda {test}") + 1, sizeof(char));
+        memset(str, '\0', sizeof(str));
+        strcpy(str, "{tes{test} alsda {test}");
+        replace_substring(&str, "{test}", "hello");
+        free(str);
+    
     } else {
         ERR_PRINT("Did not recognice command! Exiting! \n", NULL);
         exit(0);

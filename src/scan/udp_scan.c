@@ -21,7 +21,7 @@ typedef struct {
 void * run_next_best_packet(void * arg) {
     next_best_args* args = (next_best_args*)arg;
 
-    next_best_packet(&args->packet_header, &args->packet, "lo",args->filter, 10);
+    next_best_packet(&args->packet_header, &args->packet, "lo",args->filter, 3);
 
     return;
 }
