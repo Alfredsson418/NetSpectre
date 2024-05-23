@@ -14,7 +14,7 @@ Produce verbose output.
 Show debug information at runtime.
 
 ## Quiet
-`--quiet` `-q`  
+`--quiet` 
 Do not produce any output except DEBUG and ERROR messages.
 
 ## Format

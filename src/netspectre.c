@@ -37,12 +37,14 @@ int main(int argc, char *argv[]) {
     }else if (strcasecmp(argv[1], "scan") == 0) {
         scan(argc -1, processed_argv);
     }else if (strcasecmp(argv[1], "test") == 0) {
-        char * str = calloc(strlen("{tes{test} alsda {test}") + 1, sizeof(char));
-        memset(str, '\0', sizeof(str));
-        strcpy(str, "{tes{test} alsda {test}");
-        replace_substring(&str, "{test}", "hello");
-        free(str);
-    
+        int * ports = NULL;
+        int port_len;
+        char str[] = "22,23,33-34,22-44,22";
+        port_len = parse_ports(str, &ports);
+        for (int i = 0; i < port_len; i++) {
+            printf("%d\n", ports[i]);
+        }
+        free(ports);
     } else {
         ERR_PRINT("Did not recognice command! Exiting! \n", NULL);
         exit(0);

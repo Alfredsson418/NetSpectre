@@ -32,7 +32,7 @@ const char capture_docs[] = "Capture packets from and to your device.";
 const struct argp_option capture_options[] = {
     {"verbose", 'v', 0, 0, "Verbose output"},
     {"debug", 503, 0, 0, "Debug output"},
-    {"quiet", 'q', 0, 0, "No output to terminal (Error and Debug will still display)"},
+    {"quiet", 501, 0, 0, "No output to terminal (Error and Debug will still display)"},
     {"format", 500, "FORMAT", 0, "Specifies output FORMAT for packet capturing"},
     {"device", 'd', "DEVICE", 0, "Specifies the DEVICE to capture from"},
     {"hexdump", 'x', 0, 0, "Output hexdump from package"},
@@ -77,7 +77,7 @@ error_t capture_parse_opt(int key, char *arg, struct argp_state *state){
     case 504:
         arguments->capture_amount = atoi(arg);
         break;
-    case 'q':
+    case 501:
         g_no_terminal_output = 1;
         break;
     default:

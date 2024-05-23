@@ -5,9 +5,11 @@ NetSpectre is a swiss army knife of network tools
 `netspec [tool] [options]`
 ### Example
 `netspec capture -f tcp -x`
+`netspec scan -t 127.0.0.1 -d lo -p 53`
 
 ## Tools
-* [`Capture`](CAPTURE.md) - Capture and show incomming/outgoing traffic
+* [`Capture`](docs/CAPTURE.md) - Capture and show incomming/outgoing traffic
+* [`Scan`](docs/SCAN.md) - Scan for open ports on a specific target
 
 ## How to compile
 1. Download necessary libraries

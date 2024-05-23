@@ -19,6 +19,7 @@
 #include <unistd.h>
 
 #include "other/outputs.h"
+#include "other/parse_ports.h"
 
 #define IPV4_ADDR_STR_LEN 16 // 15 characters for the address and 1 for the null terminator
 
