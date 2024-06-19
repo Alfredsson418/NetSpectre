@@ -39,7 +39,7 @@ int main(int argc, char *argv[]) {
     }else if (strcasecmp(argv[1], "test") == 0) {
         int * ports = NULL;
         int port_len;
-        char str[] = "22,23,33-34,22-44,22";
+        char * str = "1-1000";
         port_len = parse_ports(str, &ports);
         for (int i = 0; i < port_len; i++) {
             printf("%d\n", ports[i]);

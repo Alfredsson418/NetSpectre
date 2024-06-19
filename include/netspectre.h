@@ -25,4 +25,9 @@
 
 #define MAX_PACKET_SIZE 65663
 
+typedef struct {
+    struct pcap_pkthdr * packet_header;
+    unsigned char * packet_payload;
+} net_packet;
+
 #endif

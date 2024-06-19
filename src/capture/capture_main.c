@@ -112,7 +112,7 @@ int capture(int argc, char *argv[]) {
                 ERR_PRINT("Found no network device\n", NULL);
                 exit(0);
             } else {
-                DEBUG_MESSAGE("Device is changed to %s\n", arguments->device);
+                DEBUG_MESSAGE("Device was not set, first found is %s\n", arguments->device);
             }
         }
         DEBUG_MESSAGE("Trying to capture on interface: %s\n", arguments->device);

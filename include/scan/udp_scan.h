@@ -4,6 +4,6 @@
 #include "../netspectre.h"
 #include "../capture/next_best_packet.h"
 
-int udp_scan(char ip[IPV4_ADDR_STR_LEN], int port);
+int udp_scan(char ip[IPV4_ADDR_STR_LEN], int port, int timeout);
 
 #endif

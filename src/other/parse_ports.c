@@ -16,7 +16,7 @@ int count_ports(char * str) {
     while ((token = strtok_r(port_str, ",", &port_str))) {
         if (strstr(token, "-") != NULL) {
             int first = atoi(strtok_r(token, "-", &token));
-            int second = atoi(token);
+            int second = atoi(strtok_r(token, "-", &token));
             if (second < first) {
                 ERR_PRINT("Could not parse ports\n", NULL);
             }
@@ -35,12 +35,17 @@ int parse_ports(char* str, int** ports) {
     char * token;
     int port_i = 0;
     
+    char* str_copy = calloc(strlen(str) + 1, sizeof(char));
+    strcpy(str_copy, str);
+
+    char * save_ptr = str_copy;
+
     // parse port_str to ports array
-    while ((token = strtok_r(str, ",", &str))) {
+    while ((token = strtok_r(str_copy, ",", &str_copy))) {
         if (strstr(token, "-") != NULL) {
             int first = atoi(strtok_r(token, "-", &token));
             int second = atoi(strtok_r(token, "-", &token));
-            printf("%d %d\n", first, second);
+
             if (second < first) {
                 ERR_PRINT("Could not parse ports\n", NULL);
             }
@@ -54,5 +59,6 @@ int parse_ports(char* str, int** ports) {
             port_i++;
         }
     }
+    free(save_ptr);
     return len;
 }

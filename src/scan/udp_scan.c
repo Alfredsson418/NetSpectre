@@ -13,28 +13,32 @@
 
 // Define a struct that holds the arguments for run_next_best_packet
 typedef struct {
-    struct pcap_pkthdr * packet_header;
-    unsigned char * packet;
+    int timeout;
     char filter[60];
 } next_best_args;
 
 void * run_next_best_packet(void * arg) {
     next_best_args* args = (next_best_args*)arg;
 
-    next_best_packet(&args->packet_header, &args->packet, "lo",args->filter, 3);
-
-    return;
+    return (void *)next_best_packet("lo",args->filter, args->timeout);
 }
 
 
-int udp_scan(char ip[IPV4_ADDR_STR_LEN], int port) {
+int udp_scan(char ip[IPV4_ADDR_STR_LEN], int port, int timeout) {
 
     pthread_t thread_id;
-
+    /*
     // Create a struct that holds the arguments for run_next_best_packet
     next_best_args* args = calloc(1, sizeof(next_best_args));
     args->packet = calloc(MAX_PACKET_SIZE + 1, sizeof(char));
     args->packet_header = calloc(1, sizeof(struct pcap_pkthdr));
+    */
+    next_best_args * args = calloc(1, sizeof(next_best_args));
+    if (args == NULL) {
+        ERR_PRINT("Failed to allocate memory for args\n", NULL);
+        return -1;
+    }
+    args->timeout = timeout;
     // First is the udp dst port, second and this is too check if it is dst and por unrech
     sprintf(args->filter, "(icmp[30:2] == %#06x) && (icmp[0] == 3) && (icmp[1] == 3)", port);
 
@@ -63,6 +67,7 @@ int udp_scan(char ip[IPV4_ADDR_STR_LEN], int port) {
     }
 
     // This needs to be here so that the scanning can start before the package is sent
+    // Could also use a varible that checks if the function has started scanning
     sleep(1);
 
     if (sendto(sock, 0, 0, 0, (struct sockaddr *)&addr, sizeof(addr)) < 0) {
@@ -71,17 +76,20 @@ int udp_scan(char ip[IPV4_ADDR_STR_LEN], int port) {
         return -1;
     }
     PRINT("Package Send!\n", NULL);
+    net_packet * packet;
+    pthread_join(thread_id, &packet);
 
-    pthread_join(thread_id, NULL);
-
-    if (args->packet_header->len > 0) {
+    if (packet->packet_header->len > 0) {
         PRINT("ICMP PACKET FOUND, PORT CLOSED\n", NULL);
     } else {
         PRINT("NO PACKET RECEIVED, PORT COULD BE OPEN\n", NULL);
     }
     close(sock);
-    free(args->packet);
-    free(args->packet_header);
+
     free(args);
+    free(packet->packet_payload);
+    free(packet->packet_header);
+    free(packet);
+
     return 0;
 }

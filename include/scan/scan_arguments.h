@@ -5,11 +5,19 @@
 
 extern const struct argp_option scan_options[];
 
+/*
+    0x11 UDP
+    0x06 TCP
+*/
+
 struct scan_arguments {
     char * device;
     int * ports;
+    int ports_len;
+    char * ports_format;
     char * target;
-    int scan_protocol;
+    char * scan_protocol;
+    int timeout;
 };
 
 error_t scan_parse_opt(int key, char *arg, struct argp_state *state);
