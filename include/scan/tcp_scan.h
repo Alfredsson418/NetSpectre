@@ -3,6 +3,13 @@
 
 #include "../netspectre.h"
 
+/*
+    Parameters:
+        ip: The target to scan.
+        port: The port to scan.
+    Return:
+        If run successfully
+*/
 int tcp_scan(char ip[IPV4_ADDR_STR_LEN], int port);
 
 #endif

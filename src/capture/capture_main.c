@@ -31,7 +31,7 @@ void bin_to_mac(uint8_t mac_bin[6], char mac[18]) {
 
 }
 
-// This could be handled as the main function for packet capturing
+
 int capture(int argc, char *argv[]) {
     char errbuff[PCAP_ERRBUF_SIZE]; // Error Buffer
 
