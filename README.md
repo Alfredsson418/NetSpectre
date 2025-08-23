@@ -2,7 +2,7 @@
 <h3 align="center">Lightweight and efficient port scanner designed for network diagnostics written in C.</h3>
 
 <div align="center">
-  <p>Please join the development server on Matrix: <b>#hawkeyes:fuckctrl.com </b> </p>
+  <p>Please join the development server on Matrix: <a href="https://matrix.to/#/#hawkeyes:fuckctrl.com">Join here!</a></b> </p>
 </div>
 
 <br>
