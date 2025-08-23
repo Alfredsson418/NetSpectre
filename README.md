@@ -2,9 +2,7 @@
 <h3 align="center">Lightweight and efficient port scanner designed for network diagnostics written in C.</h3>
 
 <div align="center">
-  <a href="https://discord.gg/76USAhaF8a">Discord</a>
-  -
-  <a href="https://www.hawkeyes.dev">Website</a>
+  <p>Please join the development server on Matrix: <b>#hawkeyes:fuckctrl.com </b> </p>
 </div>
 
 <br>
