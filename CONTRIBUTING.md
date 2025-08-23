@@ -1,8 +1,9 @@
 <h1>Contributing to this project</h1>
 <p>Before contributing to this project, please read thought the <a href="CODE_OF_CONDUCT.md">Code of conduct</a> where the community rules is.</p>
 
-<h1>Where do get help and/or join the community</h1>
-<h3><a href="https://discord.gg/76USAhaF8a">Join the discord!</a></h2>
+<h1>Where do get help and/or join the community?</h1>
+<h3>Join the matrix server!</h3>
+<h3>#hawkeyes:fuckctrl.com</h2>
 <!-- <h3><a href="">Join the Matrix server!</a> (Comming soon)</h2> -->
 
 <h1>How to contribute</h1>
